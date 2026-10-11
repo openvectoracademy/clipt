@@ -763,6 +763,15 @@ main>section:nth-of-type(even){background:var(--alt)}
 .btn-pri{box-shadow:0 6px 18px -6px var(--accent)}
 .btn:active{transform:scale(.98)}
 .btn[disabled]{opacity:.6;cursor:progress}
+
+/* ═══ STEP CARDS — proper inner spacing ═══ */
+.steps{list-style:none;padding:0;margin:0;gap:16px;align-items:stretch}
+@media(min-width:780px){.steps{gap:20px}}
+.step{list-style:none;padding:28px 26px 30px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0;min-width:0}
+.step-n{display:inline-flex;align-self:flex-start;align-items:center;font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:0;color:var(--accent);background:var(--accent-dim);padding:5px 12px;border-radius:980px;margin-bottom:18px}
+.step h3{font-size:21px;margin-bottom:8px}
+.step p{font-size:15px;line-height:1.6;max-width:none}
+@media(max-width:520px){.step{padding:24px 22px 26px}}
 </style>
 </head>
 <body>
