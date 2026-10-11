@@ -1,0 +1,8 @@
+name = "clipt"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "CLIPT_DB"
+database_name = "ii-db"
+database_id = "80c5d815-f5eb-47ea-9e17-f62ec0b5de6a"
