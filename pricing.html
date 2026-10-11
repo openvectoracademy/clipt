@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#05080f">
+<meta name="description" content="Clipt pricing — Free forever, or upgrade to Premium for 500 active links, custom aliases, permanent links, and detailed analytics.">
+<meta name="robots" content="index,follow">
+<title>Pricing — Clipt</title>
+<link rel="icon" type="image/png" href="/clipt.png">
+<link rel="apple-touch-icon" href="/clipt.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet">
+
+<style>
+/* ==========================================================================
+   CLIPT — pricing.html
+   Public pricing page + payment submission form.
+   ========================================================================== */
+:root{
+  --bg:#05080f;--surface:#0b0f1a;--surface2:#111827;--surface3:#161e2e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.11);
+  --accent:#00d4aa;--accent2:#00b894;--accent-dim:rgba(0,212,170,0.08);
+  --white:#f0f4f8;--gray:#7a8899;--gray2:#a0adb8;
+  --red:#f0566a;--red-dim:rgba(240,86,106,0.09);
+  --green:#10d48e;--green-dim:rgba(16,212,142,0.09);
+  --orange:#f59e0b;--orange-dim:rgba(245,158,11,0.09);
+  --radius:9px;--radius-lg:13px;--transition:.18s cubic-bezier(.4,0,.2,1);
+  --font-head:'Cormorant Garamond',Georgia,serif;
+  --font-body:'Cabinet Grotesk',system-ui,-apple-system,sans-serif;
+  --font-mono:'DM Mono',ui-monospace,Menlo,monospace;
+  --hdr-h:64px;--side-w:260px;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr-h) + 20px)}
+body{
+  font-family:var(--font-body);font-size:16px;line-height:1.55;
+  color:var(--gray2);background:var(--bg);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;min-height:100dvh;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);
+}
+img,svg{display:block;max-width:100%}img{height:auto}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,h4,h5{font-family:var(--font-head);font-weight:600;color:var(--white);letter-spacing:-.01em;line-height:1.15}
+p{text-wrap:pretty}h1,h2,h3{text-wrap:balance}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+:focus:not(:focus-visible){outline:none}
+
+.shell{width:100%;max-width:1200px;margin:0 auto;padding-inline:20px}
+@media(min-width:720px){.shell{padding-inline:32px}}
+@media(min-width:1024px){.shell{padding-inline:40px}}
+
+.logo{display:inline-flex;align-items:center;gap:10px;flex-shrink:0}
+.logo img{height:32px;width:auto;border-radius:6px}
+.logo-word{font-family:var(--font-head);font-size:22px;font-weight:600;color:var(--white);letter-spacing:-.015em}
+
+.hdr{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:calc(var(--hdr-h) + var(--sat));padding-top:var(--sat);
+  background:rgba(5,8,15,.85);
+  backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid transparent;transition:border-color var(--transition);
+}
+.hdr.scrolled{border-bottom-color:var(--border)}
+.hdr-in{
+  display:flex;align-items:center;gap:20px;height:var(--hdr-h);
+  width:100%;max-width:1200px;margin:0 auto;padding-inline:20px;
+}
+@media(min-width:720px){.hdr-in{padding-inline:32px}}
+@media(min-width:1024px){.hdr-in{padding-inline:40px}}
+
+.hnav{display:none;gap:4px;margin-left:24px}
+.hnav a{font-size:14px;font-weight:500;color:var(--gray2);padding:8px 12px;border-radius:8px;transition:color var(--transition),background var(--transition)}
+.hnav a:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.hnav a.on{color:var(--accent)}
+
+.hdr-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.ib{width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:9px;color:var(--gray2);position:relative;transition:background var(--transition),color var(--transition);-webkit-tap-highlight-color:transparent}
+.ib:hover{background:rgba(255,255,255,.05);color:var(--white)}
+.ib-sm{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border-radius:7px;color:var(--gray);transition:background var(--transition),color var(--transition)}
+.ib-sm:hover{background:rgba(255,255,255,.06);color:var(--white)}
+#menuBtn{display:inline-flex}
+
+.prof{position:relative}
+.prof .av-btn::after{content:"";width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));position:absolute}
+.prof .av-btn .av{position:relative;z-index:1;font-family:var(--font-body);font-size:10px;font-weight:700;color:#04110d;letter-spacing:.02em}
+.menu{position:absolute;top:calc(100% + 6px);right:0;min-width:220px;background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);box-shadow:0 12px 32px rgba(0,0,0,.5);padding:6px;display:none;z-index:110}
+.menu.open{display:block;animation:menuIn .14s ease-out}
+@keyframes menuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.menu-h{padding:10px 12px 8px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.menu-h strong{display:block;font-size:13px;color:var(--white);font-weight:600}
+.menu-h span{font-size:11.5px;color:var(--gray);word-break:break-all}
+.menu a,.menu button{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border-radius:7px;font-size:13.5px;font-weight:500;color:var(--gray2);text-align:left;transition:background var(--transition),color var(--transition)}
+.menu a:hover,.menu button:hover{background:rgba(255,255,255,.05);color:var(--white)}
+.menu .danger{color:var(--red)}
+.menu .danger:hover{background:var(--red-dim);color:var(--red)}
+.menu-sep{height:1px;background:var(--border);margin:6px 0}
+
+.side{
+  position:fixed;top:0;left:0;bottom:0;width:var(--side-w);max-width:88vw;z-index:120;
+  background:var(--surface);border-right:1px solid var(--border2);
+  transform:translateX(-100%);transition:transform .24s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;padding:var(--sat) 0 var(--sab);overflow-y:auto;
+}
+.side.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.5)}
+.side-top{padding:20px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.side-nav{flex:1;padding:14px 12px}
+.side-sec{font-family:var(--font-mono);font-size:10.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--gray);padding:14px 12px 6px}
+.nav-i{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:8px;font-size:14px;font-weight:500;color:var(--gray2);text-align:left;position:relative;transition:background var(--transition),color var(--transition)}
+.nav-i:hover{background:rgba(255,255,255,.04);color:var(--white)}
+.nav-i.on{background:var(--accent-dim);color:var(--accent)}
+.nav-i svg{flex-shrink:0;opacity:.9}
+.side-bot{border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0}
+.user-chip{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:9px;transition:background var(--transition)}
+.user-chip:hover{background:rgba(255,255,255,.04)}
+.user-chip .av{width:36px;height:36px;border-radius:50%;flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:13px;font-weight:700;color:#04110d}
+.user-chip .meta{min-width:0;flex:1}
+.user-chip .meta strong{display:block;font-size:13.5px;font-weight:600;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-chip .meta span{display:block;font-size:11.5px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.scrim{position:fixed;inset:0;z-index:110;background:rgba(0,0,0,.6);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity var(--transition),visibility var(--transition)}
+.scrim.on{opacity:1;visibility:visible}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:44px;padding:0 18px;border-radius:var(--radius);
+  font-family:var(--font-body);font-size:14px;font-weight:600;
+  letter-spacing:-.005em;white-space:nowrap;border:1px solid transparent;cursor:pointer;
+  transition:background var(--transition),border-color var(--transition),color var(--transition),transform var(--transition);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn:active{transform:translateY(1px)}
+.btn-lg{height:52px;padding:0 26px;font-size:15px}
+.btn-sm{height:36px;padding:0 14px;font-size:13px}
+.btn-pri{background:var(--accent);color:#04110d;border-color:var(--accent);box-shadow:0 1px 2px rgba(0,212,170,.18)}
+.btn-pri:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-pri:active{box-shadow:none}
+.btn-ghost{background:transparent;color:var(--white);border-color:var(--border2)}
+.btn-ghost:hover{border-color:var(--gray);background:rgba(255,255,255,.03)}
+.btn-quiet{background:transparent;color:var(--gray2);border-color:transparent;padding:0 12px}
+.btn-quiet:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+
+.field{margin-bottom:16px}
+.field label{display:block;font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:7px}
+.input,.select,.textarea{
+  width:100%;height:46px;padding:0 14px;
+  background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);
+  font-family:var(--font-body);font-size:15px;color:var(--white);outline:none;
+  transition:border-color var(--transition),background var(--transition);
+}
+.input:hover,.select:hover,.textarea:hover{border-color:rgba(255,255,255,.18)}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);background:var(--surface3)}
+.input::placeholder,.textarea::placeholder{color:var(--gray);opacity:.7}
+.textarea{height:auto;padding:12px 14px;resize:vertical;min-height:80px;line-height:1.5}
+.select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%237a8899' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer}
+.field-hint{font-size:12.5px;color:var(--gray);margin-top:6px;line-height:1.5}
+
+.toast{
+  position:fixed;left:20px;right:20px;bottom:calc(20px + var(--sab));z-index:200;
+  max-width:420px;margin:0 auto;padding:14px 18px;
+  background:var(--surface3);border:1px solid var(--border2);
+  border-left:3px solid var(--accent);border-radius:var(--radius-lg);
+  font-size:14px;color:var(--white);box-shadow:0 8px 32px rgba(0,0,0,.5);
+  transform:translateY(120%);opacity:0;visibility:hidden;
+  transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s,visibility .28s;
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;visibility:visible}
+.toast-success{border-left-color:var(--accent)}
+.toast-error{border-left-color:var(--red)}
+.toast-info{border-left-color:var(--orange)}
+@media(min-width:720px){.toast{left:auto;right:24px;bottom:calc(24px + var(--sab));margin:0}}
+
+.modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex;animation:fadeIn .16s ease-out}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{width:100%;max-width:440px;max-height:calc(100dvh - 40px);background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);box-shadow:0 24px 64px rgba(0,0,0,.6);display:flex;flex-direction:column;animation:modalIn .18s cubic-bezier(.4,0,.2,1);overflow:hidden}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.modal-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.modal-h h3{font-family:var(--font-head);font-size:22px;font-weight:600;color:var(--white);letter-spacing:-.015em;line-height:1.2}
+.modal-b{padding:20px;overflow-y:auto;flex:1;min-height:0}
+.modal-f{padding:14px 20px 18px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
+.modal-f .btn{flex:1}
+@media(max-width:520px){
+  .modal-overlay{padding:12px;align-items:flex-end}
+  .modal{border-radius:16px 16px 0 0;max-height:92dvh;padding-bottom:var(--sab)}
+  .modal-h{padding:22px 18px 14px}
+  .modal-b{padding:18px}
+  .modal-f{padding:12px 18px calc(16px + var(--sab))}
+}
+#_alert{display:none;padding:11px 14px;border-radius:var(--radius);font-size:13.5px;line-height:1.5;margin-bottom:16px}
+#_alert.show{display:block}
+#_alert.error{background:var(--red-dim);color:var(--red);border:1px solid rgba(240,86,106,.25)}
+#_alert.info{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(0,212,170,.25)}
+#_alert.warn{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(245,158,11,.25)}
+
+.main{padding-top:calc(var(--hdr-h) + var(--sat));min-height:60vh}
+
+/* ─── HERO ──────────────────────────────────────────────────────────── */
+.pricing-hero{padding:64px 0 40px;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.pricing-hero::before{
+  content:"";position:absolute;top:-200px;left:50%;transform:translateX(-50%);
+  width:800px;height:500px;
+  background:radial-gradient(ellipse at center,rgba(0,212,170,.08),transparent 65%);
+  pointer-events:none;
+}
+@media(min-width:720px){.pricing-hero{padding:88px 0 56px}}
+.pricing-hero-in{position:relative;max-width:680px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--font-mono);font-size:11.5px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--accent);border-radius:2px}
+.pricing-hero h1{font-family:var(--font-head);font-size:clamp(38px,6vw,58px);font-weight:600;line-height:1.08;letter-spacing:-.028em;color:var(--white);margin-bottom:18px}
+.pricing-hero h1 em{font-style:italic;font-weight:500;color:var(--accent)}
+.pricing-hero p{font-size:17px;line-height:1.65;color:var(--gray2);max-width:520px;margin:0 auto}
+
+/* ─── PLANS ─────────────────────────────────────────────────────────── */
+.plans{padding:56px 0 80px}
+.plans-grid{display:grid;grid-template-columns:1fr;gap:20px;max-width:920px;margin:0 auto}
+@media(min-width:820px){.plans-grid{grid-template-columns:1fr 1fr;gap:24px}}
+
+.plan{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:18px;padding:32px 28px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.plan.premium{border-color:rgba(0,212,170,.28)}
+.plan.premium::before{
+  content:"";position:absolute;top:-120px;right:-120px;width:280px;height:280px;
+  background:radial-gradient(circle,rgba(0,212,170,.14),transparent 70%);
+  pointer-events:none;
+}
+.plan-in{position:relative;display:flex;flex-direction:column;flex:1}
+.plan-badge{
+  display:inline-flex;align-items:center;gap:6px;align-self:flex-start;
+  padding:5px 12px;border-radius:99px;
+  font-family:var(--font-mono);font-size:10.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:18px;
+}
+.plan-badge.free{background:var(--surface3);color:var(--gray2)}
+.plan-badge.premium{background:var(--accent-dim);color:var(--accent)}
+.plan h2{font-family:var(--font-head);font-size:28px;font-weight:600;letter-spacing:-.02em;color:var(--white);margin-bottom:6px}
+.plan .tagline{font-size:14px;color:var(--gray);margin-bottom:22px;line-height:1.5}
+.plan .price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}
+.plan .price{font-family:var(--font-head);font-size:48px;font-weight:600;letter-spacing:-.025em;color:var(--white);line-height:1}
+.plan .price-unit{font-size:14px;color:var(--gray)}
+.plan .price-note{font-size:12.5px;color:var(--gray);margin-bottom:24px;min-height:1.5em}
+.plan .cta-wrap{margin-bottom:24px}
+.plan .cta-wrap .btn{width:100%}
+.plan .features{
+  border-top:1px solid var(--border);padding-top:22px;margin-top:auto;
+  display:flex;flex-direction:column;gap:12px;
+}
+.feat{display:flex;align-items:flex-start;gap:11px;font-size:14px;line-height:1.5;color:var(--gray2)}
+.feat svg{flex-shrink:0;margin-top:2px}
+.feat.yes svg{color:var(--accent)}
+.feat.no{opacity:.55}
+.feat.no svg{color:var(--gray)}
+.feat strong{color:var(--white);font-weight:600}
+
+/* ─── COMPARE TABLE ─────────────────────────────────────────────────── */
+.compare{padding:32px 0 80px}
+.compare-in{max-width:920px;margin:0 auto}
+.compare h2{
+  font-family:var(--font-head);font-size:clamp(24px,3.4vw,32px);
+  font-weight:600;letter-spacing:-.02em;color:var(--white);
+  margin-bottom:8px;
+}
+.compare .sub{font-size:15px;color:var(--gray2);margin-bottom:32px}
+.compare-table{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+}
+.compare-row{
+  display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;
+  padding:16px 22px;border-bottom:1px solid var(--border);
+  align-items:center;
+}
+.compare-row:last-child{border-bottom:none}
+.compare-row.head{
+  background:var(--surface2);
+  font-family:var(--font-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray);
+  padding:14px 22px;
+}
+.compare-row.head .col-free,.compare-row.head .col-prem{text-align:center}
+.compare-row .col-feat{font-size:14px;color:var(--gray2);min-width:0}
+.compare-row .col-free,.compare-row .col-prem{
+  text-align:center;font-size:14px;color:var(--gray2);
+  font-family:var(--font-mono);font-weight:500;
+}
+.compare-row .col-prem{color:var(--accent);font-weight:600}
+.compare-row .check{color:var(--accent);display:inline-flex}
+.compare-row .dash{color:var(--gray);opacity:.5}
+@media(max-width:560px){
+  .compare-row{padding:14px 16px;gap:10px}
+  .compare-row .col-feat{font-size:13.5px}
+  .compare-row .col-free,.compare-row .col-prem{font-size:13px}
+}
+
+/* ─── UPGRADE / PAYMENT ─────────────────────────────────────────────── */
+.upgrade{padding:32px 0 80px}
+.upgrade-in{max-width:720px;margin:0 auto}
+.upgrade-head{text-align:center;margin-bottom:28px}
+.upgrade-head h2{
+  font-family:var(--font-head);font-size:clamp(24px,3.4vw,34px);
+  font-weight:600;letter-spacing:-.02em;color:var(--white);margin-bottom:10px;
+}
+.upgrade-head p{font-size:15px;color:var(--gray2);line-height:1.6}
+
+.upgrade-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:28px 26px;
+}
+@media(min-width:640px){.upgrade-card{padding:32px 32px}}
+
+.steps{
+  counter-reset:step;display:flex;flex-direction:column;gap:16px;
+  margin-bottom:24px;padding:20px 22px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+.steps li{position:relative;padding-left:38px;font-size:14px;line-height:1.6;color:var(--gray2)}
+.steps li::before{
+  counter-increment:step;content:counter(step);
+  position:absolute;left:0;top:1px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--accent);color:#04110d;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:12px;font-weight:700;
+}
+.steps li strong{color:var(--white);font-weight:600}
+
+.tg-cta{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:18px 20px;background:rgba(34,158,217,.08);
+  border:1px solid rgba(34,158,217,.25);border-radius:var(--radius);
+  margin-bottom:24px;flex-wrap:wrap;
+}
+.tg-cta-text{flex:1;min-width:0}
+.tg-cta-text .l{
+  font-family:var(--font-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:#5eb8e3;margin-bottom:4px;
+}
+.tg-cta-text .v{font-size:15px;font-weight:600;color:var(--white);word-break:break-all}
+.tg-btn{
+  display:inline-flex;align-items:center;gap:9px;
+  height:44px;padding:0 20px;border-radius:var(--radius);
+  background:#229ED9;color:#fff;font-weight:600;font-size:14px;
+  transition:background var(--transition),transform var(--transition);
+  flex-shrink:0;
+}
+.tg-btn:hover{background:#1b87ba}
+.tg-btn:active{transform:translateY(1px)}
+
+.pay-form-head{
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray);
+  padding-bottom:12px;margin-bottom:20px;border-bottom:1px solid var(--border);
+}
+
+.pay-note{
+  background:var(--accent-dim);border:1px solid rgba(0,212,170,.25);
+  border-radius:var(--radius);padding:12px 14px;
+  font-size:13.5px;color:var(--accent);line-height:1.55;
+  margin-bottom:18px;
+}
+
+.pending-notice{
+  background:var(--orange-dim);border:1px solid rgba(245,158,11,.3);
+  border-radius:var(--radius);padding:16px 18px;
+  font-size:14px;color:var(--orange);line-height:1.6;
+}
+.pending-notice strong{color:#fbbf24;font-weight:600}
+
+.guest-notice{
+  text-align:center;padding:20px 0;
+}
+.guest-notice p{font-size:14.5px;color:var(--gray2);margin-bottom:18px;line-height:1.6}
+.guest-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+@media(max-width:520px){.guest-actions{flex-direction:column}.guest-actions .btn{width:100%}}
+
+/* ─── FAQ ───────────────────────────────────────────────────────────── */
+.faq-section{padding:32px 0 80px;border-top:1px solid var(--border)}
+.faq-section-in{max-width:720px;margin:0 auto}
+.faq-section h2{
+  font-family:var(--font-head);font-size:clamp(24px,3.4vw,32px);
+  font-weight:600;letter-spacing:-.02em;color:var(--white);margin-bottom:28px;
+}
+.faq{border-top:1px solid var(--border)}
+.faq details{border-bottom:1px solid var(--border)}
+.faq summary{
+  list-style:none;cursor:pointer;padding:22px 4px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  font-family:var(--font-head);font-size:19px;font-weight:600;
+  color:var(--white);letter-spacing:-.01em;min-height:60px;
+  transition:color var(--transition);
+}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:hover{color:var(--accent)}
+.faq summary svg{color:var(--gray);flex-shrink:0;transition:transform var(--transition),color var(--transition)}
+.faq details[open] summary svg{transform:rotate(180deg);color:var(--accent)}
+.faq details > p{padding:0 4px 22px;font-size:15px;line-height:1.7;color:var(--gray2);max-width:640px}
+.faq details > p strong{color:var(--white);font-weight:600}
+.faq details > p a{color:var(--accent)}
+.faq details > p a:hover{text-decoration:underline}
+
+/* ─── CLOSING CTA ───────────────────────────────────────────────────── */
+.cta-band{padding:80px 0 96px;border-top:1px solid var(--border)}
+.cta-in{
+  max-width:720px;margin:0 auto;text-align:center;
+  background:linear-gradient(135deg,var(--surface2),var(--surface));
+  border:1px solid var(--border2);border-radius:20px;
+  padding:56px 32px;position:relative;overflow:hidden;
+}
+.cta-in::before{
+  content:"";position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+  width:520px;height:280px;
+  background:radial-gradient(ellipse,rgba(0,212,170,.12),transparent 70%);
+  pointer-events:none;
+}
+.cta-in > *{position:relative}
+.cta-in h2{
+  font-family:var(--font-head);font-size:clamp(28px,4vw,40px);
+  font-weight:600;letter-spacing:-.02em;color:var(--white);margin-bottom:14px;
+}
+.cta-in p{font-size:16px;color:var(--gray2);margin-bottom:28px;line-height:1.6}
+.cta-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+@media(max-width:520px){.cta-actions{flex-direction:column}.cta-actions .btn{width:100%}}
+
+/* ─── FOOTER ────────────────────────────────────────────────────────── */
+.ftr{background:var(--surface);border-top:1px solid var(--border);padding:56px 0 24px}
+.ftr-in{
+  width:100%;max-width:1200px;margin:0 auto;padding-inline:20px;
+  display:grid;grid-template-columns:1fr;gap:36px;
+}
+@media(min-width:720px){.ftr-in{padding-inline:32px;grid-template-columns:2fr 1fr 1fr 1fr}}
+@media(min-width:1024px){.ftr-in{padding-inline:40px}}
+.ftr h5{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
+.ftr ul{display:flex;flex-direction:column;gap:10px}
+.ftr a{font-size:14px;color:var(--gray2);transition:color var(--transition)}
+.ftr a:hover{color:var(--accent)}
+.ftr p{font-size:13.5px;line-height:1.7;color:var(--gray);margin-top:16px;max-width:320px}
+.ftr-b{
+  width:100%;max-width:1200px;margin:44px auto 0;
+  padding:20px 20px calc(20px + var(--sab));
+  border-top:1px solid var(--border);
+  font-size:13px;color:var(--gray);text-align:center;
+}
+@media(min-width:720px){.ftr-b{padding-inline:32px}}
+@media(min-width:1024px){.ftr-b{padding-inline:40px}}
+
+.hidden{display:none !important}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(0,0,0,.2);border-top-color:currentColor;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn .spin{margin-right:2px}
+.btn-ghost .spin{border-color:rgba(255,255,255,.2);border-top-color:var(--white)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="side" id="side" aria-label="Navigation">
+  <div class="side-top">
+    <a href="/" class="logo">
+      <img src="/clipt.png" alt="Clipt">
+      <span class="logo-word">Clipt</span>
+    </a>
+  </div>
+  <nav class="side-nav">
+    <div class="side-sec">Explore</div>
+    <a class="nav-i" href="/">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>
+      Home
+    </a>
+    <a class="nav-i on" href="/pricing.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.2"/></svg>
+      Pricing
+    </a>
+    <a class="nav-i" href="/dashboard.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+  </nav>
+  <div class="side-bot" id="sideBot"></div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<!-- HEADER -->
+<header class="hdr" id="hdr">
+  <div class="hdr-in">
+    <button class="ib" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="/" class="logo">
+      <img src="/clipt.png" alt="Clipt">
+      <span class="logo-word">Clipt</span>
+    </a>
+    <nav class="hnav">
+      <a href="/">Home</a>
+      <a href="/pricing.html" class="on">Pricing</a>
+      <a href="/dashboard.html">Dashboard</a>
+    </nav>
+    <div class="hdr-r" id="hdrR"></div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- ─── HERO ──────────────────────────────────────────────────── -->
+  <section class="pricing-hero">
+    <div class="shell pricing-hero-in">
+      <p class="eyebrow">Pricing</p>
+      <h1>Free forever. <em>Premium when you need it.</em></h1>
+      <p>Start with 15 links, upgrade to 500 whenever you're ready. No auto-charges, no hidden fees, no surprises.</p>
+    </div>
+  </section>
+
+  <!-- ─── PLANS ─────────────────────────────────────────────────── -->
+  <section class="plans">
+    <div class="shell">
+      <div class="plans-grid" id="plansGrid">
+        <!-- rendered by JS to keep prices/limits in sync with /auth/config -->
+        <div class="plan"><div class="plan-in"><div class="skel" style="height:280px"></div></div></div>
+        <div class="plan"><div class="plan-in"><div class="skel" style="height:280px"></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── COMPARE ───────────────────────────────────────────────── -->
+  <section class="compare">
+    <div class="shell compare-in">
+      <h2>What's included</h2>
+      <p class="sub">The full breakdown. No asterisks.</p>
+      <div class="compare-table" id="compareTable">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── UPGRADE / PAYMENT ─────────────────────────────────────── -->
+  <section class="upgrade" id="upgrade">
+    <div class="shell upgrade-in">
+      <header class="upgrade-head">
+        <h2>Upgrade to Premium</h2>
+        <p>Manual approval, no automatic charges. You'll hear back within a few hours.</p>
+      </header>
+      <div class="upgrade-card" id="upgradeCard">
+        <div class="skel" style="height:280px"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ───────────────────────────────────────────────────── -->
+  <section class="faq-section">
+    <div class="shell faq-section-in">
+      <h2>Questions</h2>
+      <div class="faq">
+        <details>
+          <summary>
+            <span>How do I actually pay?</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>
+          </summary>
+          <p>Message us on Telegram first — we'll send you the bKash, Nagad, or Rocket number to use. Then send the exact amount, come back here, and submit your transaction ID. We verify and unlock your account.</p>
+        </details>
+        <details>
+          <summary>
+            <span>Why do I need to message you first?</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>
+          </summary>
+          <p>Two reasons: it lets us confirm the exact amount before you send anything, and it keeps our payment numbers off public pages where they'd get scraped by spam bots. It's a small step, and it makes the whole process safer for everyone.</p>
+        </details>
+        <details>
+          <summary>
+            <span>How long does approval take?</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>
+          </summary>
+          <p>Usually within a few hours. We cross-check every transaction ID against our bKash/Nagad/Rocket history before approving. If you're in a hurry, mention it in your Telegram message.</p>
+        </details>
+        <details>
+          <summary>
+            <span>Can I switch back to Free?</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>
+          </summary>
+          <p>Yes, but Premium is a one-time purchase, not a subscription — once you've paid for 30 days, you have them regardless. If you want to go back to Free early, message us and we'll downgrade you. No refunds on partial months.</p>
+        </details>
+        <details>
+          <summary>
+            <span>What happens to my links if I downgrade?</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>
+          </summary>
+          <p>Nothing breaks. Your existing links keep working. You just can't <strong>create</strong> new ones beyond the Free limit (15 active, 5/day). Existing premium links keep their permanent expiry.</p>
+        </details>
+        <details>
+          <summary>
+            <span>Is there a refund policy?</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 8 10 13 15 8"/></svg>
+          </summary>
+          <p>If we can't verify your payment, you get your money back (or the transaction stays unconfirmed on your side). If your account was upgraded and you change your mind within 24 hours, message us — we'll work something out.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CTA ───────────────────────────────────────────────────── -->
+  <section class="cta-band">
+    <div class="shell">
+      <div class="cta-in">
+        <h2>Still on the fence?</h2>
+        <p>Start free. You'll know within a week whether Premium is worth it.</p>
+        <div class="cta-actions">
+          <a href="/" class="btn btn-pri btn-lg">
+            Create free account
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+          <a href="#upgrade" class="btn btn-ghost btn-lg">Jump to upgrade</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="ftr">
+  <div class="ftr-in">
+    <div>
+      <a href="/" class="logo" style="margin-bottom:14px">
+        <img src="/clipt.png" alt="Clipt">
+        <span class="logo-word">Clipt</span>
+      </a>
+      <p>Short links with clear limits, honest pricing, and analytics that respect your visitors.</p>
+    </div>
+    <div>
+      <h5>Platform</h5>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/pricing.html">Pricing</a></li>
+        <li><a href="/dashboard.html">Dashboard</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Support</h5>
+      <ul>
+        <li><a href="/#faq">Questions and answers</a></li>
+        <li><a href="#upgrade">Upgrade help</a></li>
+        <li><a href="#" id="ftrTg">Message on Telegram</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Legal</h5>
+      <ul>
+        <li><a href="#">Terms of use</a></li>
+        <li><a href="#">Privacy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ftr-b">© <span id="yr"></span> Clipt. All rights reserved.</div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- MODAL (sign-in only) -->
+<div class="modal-overlay" id="gModal" role="dialog" aria-modal="true" aria-labelledby="gTitle">
+  <div class="modal">
+    <div class="modal-h">
+      <h3 id="gTitle">Modal</h3>
+      <button class="ib-sm" id="gClose" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-b" id="gBody"></div>
+    <div class="modal-f" id="gFoot"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ─── CONSTANTS ────────────────────────────────────────────────────── */
+const TK = 'clipt_token';
+const UK = 'clipt_user';
+// Hardcoded Telegram handle (backend "telegram" setting isn't in DEFAULTS).
+// Change this one line to update everywhere on this page.
+const TELEGRAM_HANDLE = 'adamzamps';
+
+/* ─── AUTH ──────────────────────────────────────────────────────────── */
+function getToken(){ try { return localStorage.getItem(TK); } catch { return null; } }
+function getUser(){ try { return JSON.parse(localStorage.getItem(UK) || 'null'); } catch { return null; } }
+function setAuth(token, user){
+  try {
+    localStorage.setItem(TK, token);
+    localStorage.setItem(UK, JSON.stringify(user));
+  } catch {}
+}
+function clearAuth(){
+  try { localStorage.removeItem(TK); localStorage.removeItem(UK); } catch {}
+}
+
+/* ─── XSS ESCAPER ───────────────────────────────────────────────────── */
+function esc(s){
+  const d = document.createElement('div');
+  d.textContent = String(s == null ? '' : s);
+  return d.innerHTML;
+}
+
+/* ─── API CLIENT — reads X-New-Token ────────────────────────────────── */
+async function api(method, path, body){
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (getToken() || '')
+    }
+  };
+  if (body !== undefined && body !== null) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch('/api' + path, opts);
+    const nt = res.headers.get('X-New-Token');
+    if (nt) { try { localStorage.setItem(TK, nt); } catch {} }
+    let data = {};
+    try { data = await res.json(); } catch {}
+    return { ok: res.ok, data, status: res.status };
+  } catch (e) {
+    return { ok: false, data: { error: 'Network error. Please try again.' }, status: 0 };
+  }
+}
+
+/* ─── TOAST ─────────────────────────────────────────────────────────── */
+let toastT = null;
+function showToast(msg, type){
+  type = type || 'success';
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast toast-' + type + ' show';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ─── MODAL (sign-in only) ──────────────────────────────────────────── */
+function openModal(title, bodyHtml, footerHtml){
+  document.getElementById('gTitle').textContent = title;
+  document.getElementById('gBody').innerHTML = bodyHtml;
+  document.getElementById('gFoot').innerHTML = footerHtml || '';
+  document.getElementById('gModal').classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+  setTimeout(() => {
+    const f = document.querySelector('#gModal .input');
+    if (f) { try { f.focus(); } catch {} }
+  }, 60);
+}
+function closeModal(){
+  document.getElementById('gModal').classList.remove('open');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('gClose').addEventListener('click', closeModal);
+document.getElementById('gModal').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') {
+    if (document.getElementById('gModal').classList.contains('open')) closeModal();
+    else closeSidebar();
+  }
+});
+function setAlert(msg, type){
+  const el = document.getElementById('_alert');
+  if (!el) return;
+  if (!msg) { el.className = ''; el.textContent = ''; return; }
+  el.textContent = msg;
+  el.className = 'show ' + (type || 'error');
+}
+
+/* ─── SIDEBAR ───────────────────────────────────────────────────────── */
+const isDesktop = () => window.matchMedia('(min-width: 861px)').matches;
+function openSidebar(){
+  document.getElementById('side').classList.add('open');
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', 'true');
+  document.documentElement.style.overflow = 'hidden';
+}
+function closeSidebar(){
+  document.getElementById('side').classList.remove('open');
+  document.getElementById('scrim').classList.remove('on');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('menuBtn').addEventListener('click', function(){
+  const s = document.getElementById('side');
+  if (s.classList.contains('open')) closeSidebar();
+  else openSidebar();
+});
+document.getElementById('scrim').addEventListener('click', closeSidebar);
+window.addEventListener('resize', function(){ if (isDesktop()) closeSidebar(); });
+
+/* ─── HEADER ────────────────────────────────────────────────────────── */
+const hdr = document.getElementById('hdr');
+let hdrTick = false;
+window.addEventListener('scroll', function(){
+  if (hdrTick) return;
+  hdrTick = true;
+  requestAnimationFrame(function(){
+    hdr.classList.toggle('scrolled', window.scrollY > 6);
+    hdrTick = false;
+  });
+}, { passive: true });
+
+function renderHeader(){
+  const box = document.getElementById('hdrR');
+  const sideBot = document.getElementById('sideBot');
+  const user = getUser();
+  if (user) {
+    const initial = String(user.name || user.email || 'U').trim().charAt(0).toUpperCase();
+    box.innerHTML = `
+      <a class="btn btn-ghost btn-sm" href="/dashboard.html" style="height:36px">Dashboard</a>
+      <div class="prof">
+        <button class="ib av-btn" id="profBtn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
+          <span class="av">${esc(initial)}</span>
+        </button>
+        <div class="menu" id="profMenu">
+          <div class="menu-h">
+            <strong>${esc(user.name || 'Account')}</strong>
+            <span>${esc(user.email || '')}</span>
+          </div>
+          <a href="/dashboard.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </a>
+          <div class="menu-sep"></div>
+          <button type="button" class="danger" id="signOutBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 8l4 4-4 4M20 12H9"/></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+    `;
+    sideBot.innerHTML = `
+      <div class="user-chip">
+        <span class="av">${esc(initial)}</span>
+        <span class="meta">
+          <strong>${esc(user.name || 'Account')}</strong>
+          <span>${esc(user.email || '')}</span>
+        </span>
+      </div>
+    `;
+    wireProfileMenu();
+  } else {
+    box.innerHTML = `
+      <a class="btn btn-quiet" href="/?signin=1" style="height:36px;padding:0 12px">Sign in</a>
+      <a class="btn btn-pri btn-sm" href="/?signup=1" style="height:36px">Create account</a>
+    `;
+    sideBot.innerHTML = `
+      <a class="btn btn-pri" style="width:100%" href="/?signup=1">Create account</a>
+    `;
+  }
+}
+
+function wireProfileMenu(){
+  const profBtn = document.getElementById('profBtn');
+  const profMenu = document.getElementById('profMenu');
+  if (!profBtn || !profMenu) return;
+  profBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    const open = profMenu.classList.toggle('open');
+    profBtn.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('click', function(e){
+    if (!profMenu.contains(e.target) && e.target !== profBtn) {
+      profMenu.classList.remove('open');
+      profBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  const so = document.getElementById('signOutBtn');
+  if (so) {
+    so.addEventListener('click', function(){
+      clearAuth();
+      showToast('Signed out.', 'info');
+      setTimeout(() => { window.location.href = '/'; }, 500);
+    });
+  }
+}
+
+/* ─── CONFIG ────────────────────────────────────────────────────────────
+   Fetch /auth/config to get the exact limits from the backend.
+   Fall back to the hardcoded values if the call fails.               */
+let CFG = {
+  plans: {
+    monthly: { usd: 2.99, bdt: 299,  days: 30  },
+    yearly:  { usd: 29,   bdt: 2990, days: 365 }
+  },
+  limits: {
+    free:    { links: 15,  daily: 5,   alias: 1,  create: 2,  api: 60  },
+    premium: { links: 500, daily: 100, alias: 50, create: 10, api: 120 }
+  },
+  free_expiry_days: 90,
+  registration_open: true,
+  support_email: ''
+};
+
+async function loadConfig(){
+  const r = await api('GET', '/auth/config');
+  if (r.ok && r.data) {
+    if (r.data.plans) CFG.plans = r.data.plans;
+    if (r.data.limits) CFG.limits = r.data.limits;
+    if (typeof r.data.free_expiry_days === 'number') CFG.free_expiry_days = r.data.free_expiry_days;
+    if (typeof r.data.registration_open === 'boolean') CFG.registration_open = r.data.registration_open;
+    if (r.data.support_email) CFG.support_email = r.data.support_email;
+  }
+}
+
+/* ─── PLANS RENDER ──────────────────────────────────────────────────── */
+function renderPlans(){
+  const grid = document.getElementById('plansGrid');
+  const free = CFG.limits.free;
+  const prem = CFG.limits.premium;
+  const monthly = CFG.plans.monthly;
+  const yearly = CFG.plans.yearly;
+  const user = getUser();
+  const isPrem = user && user.plan === 'premium' && user.plan_until > Date.now();
+
+  const check = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 11 8 15 16 6"/></svg>';
+  const cross = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+
+  const freeCta = user
+    ? (isPrem
+        ? '<a class="btn btn-ghost" href="/dashboard.html">Your current plan</a>'
+        : '<a class="btn btn-ghost" href="/dashboard.html">You\'re on this plan</a>')
+    : '<a class="btn btn-ghost" href="/?signup=1">Start free</a>';
+
+  const premCta = !user
+    ? '<a class="btn btn-pri" href="/?signup=1">Create account to upgrade</a>'
+    : (isPrem
+        ? '<a class="btn btn-ghost" href="/dashboard.html">View your plan</a>'
+        : '<a class="btn btn-pri" href="#upgrade">Upgrade now →</a>');
+
+  grid.innerHTML = `
+    <article class="plan">
+      <div class="plan-in">
+        <span class="plan-badge free">Free</span>
+        <h2>Start here</h2>
+        <p class="tagline">Enough for personal use. No time limit, no credit card.</p>
+        <div class="price-row">
+          <span class="price">৳0</span>
+          <span class="price-unit">forever</span>
+        </div>
+        <div class="price-note">No credit card required</div>
+        <div class="cta-wrap">${freeCta}</div>
+        <div class="features">
+          <div class="feat yes">${check}<span><strong>${free.links}</strong> active links</span></div>
+          <div class="feat yes">${check}<span><strong>${free.daily}</strong> new links per day</span></div>
+          <div class="feat yes">${check}<span><strong>${free.alias}</strong> custom alias</span></div>
+          <div class="feat yes">${check}<span>Total click counts</span></div>
+          <div class="feat yes">${check}<span>Links expire after <strong>${CFG.free_expiry_days} days</strong></span></div>
+          <div class="feat no">${cross}<span>No daily breakdown</span></div>
+          <div class="feat no">${cross}<span>No country or referrer data</span></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="plan premium">
+      <div class="plan-in">
+        <span class="plan-badge premium">Premium</span>
+        <h2>For real work</h2>
+        <p class="tagline">500 links, permanent URLs, and analytics you can act on.</p>
+        <div class="price-row">
+          <span class="price">৳${monthly.bdt}</span>
+          <span class="price-unit">/ month</span>
+        </div>
+        <div class="price-note">or ৳${yearly.bdt} for a full year — save ৳${monthly.bdt * 12 - yearly.bdt}</div>
+        <div class="cta-wrap">${premCta}</div>
+        <div class="features">
+          <div class="feat yes">${check}<span><strong>${prem.links}</strong> active links</span></div>
+          <div class="feat yes">${check}<span><strong>${prem.daily}</strong> new links per day</span></div>
+          <div class="feat yes">${check}<span><strong>${prem.alias}</strong> custom aliases</span></div>
+          <div class="feat yes">${check}<span>Total click counts</span></div>
+          <div class="feat yes">${check}<span>Permanent links, or pick your own expiry</span></div>
+          <div class="feat yes">${check}<span>30-day daily click breakdown</span></div>
+          <div class="feat yes">${check}<span>Top countries and referrers</span></div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+/* ─── COMPARE TABLE ─────────────────────────────────────────────────── */
+function renderCompare(){
+  const f = CFG.limits.free;
+  const p = CFG.limits.premium;
+  const check = '<span class="check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 11 8 15 16 6"/></svg></span>';
+  const dash = '<span class="dash">—</span>';
+  const rows = [
+    ['Active links', String(f.links), String(p.links)],
+    ['New links per day', String(f.daily), String(p.daily)],
+    ['Custom aliases', String(f.alias), String(p.alias)],
+    ['API requests per minute', String(f.api), String(p.api)],
+    ['Link expiry', CFG.free_expiry_days + ' days', 'Permanent or your own date'],
+    ['Total click counts', check, check],
+    ['30-day daily breakdown', dash, check],
+    ['Top countries', dash, check],
+    ['Top referrers', dash, check]
+  ];
+  document.getElementById('compareTable').innerHTML =
+    '<div class="compare-row head"><div class="col-feat">Feature</div><div class="col-free">Free</div><div class="col-prem">Premium</div></div>' +
+    rows.map(function(r){
+      return '<div class="compare-row"><div class="col-feat">' + r[0] + '</div><div class="col-free">' + r[1] + '</div><div class="col-prem">' + r[2] + '</div></div>';
+    }).join('');
+}
+
+/* ─── UPGRADE BLOCK ─────────────────────────────────────────────────── */
+async function renderUpgrade(){
+  const wrap = document.getElementById('upgradeCard');
+  const user = getUser();
+
+  // Guest — sign in to upgrade
+  if (!user) {
+    wrap.innerHTML = `
+      <div class="guest-notice">
+        <p>Sign in to your account first, then come back here to submit your payment.</p>
+        <div class="guest-actions">
+          <a class="btn btn-pri" href="/?signin=1">Sign in</a>
+          <a class="btn btn-ghost" href="/?signup=1">Create account</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Already premium
+  if (user.plan === 'premium' && user.plan_until > Date.now()) {
+    const until = new Date(user.plan_until).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
+    wrap.innerHTML = `
+      <div style="text-align:center;padding:8px 0 4px">
+        <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;background:var(--accent-dim);color:var(--accent);font-family:var(--font-mono);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 11 8 15 16 6"/></svg>
+          Premium active
+        </div>
+        <h3 style="font-family:var(--font-head);font-size:24px;font-weight:600;letter-spacing:-.015em;color:var(--white);margin-bottom:8px">You're on Premium</h3>
+        <p style="font-size:14.5px;color:var(--gray2);margin-bottom:20px">Active until <strong style="color:var(--accent)">${esc(until)}</strong></p>
+        <a class="btn btn-ghost" href="/dashboard.html">Go to dashboard</a>
+      </div>
+    `;
+    return;
+  }
+
+  // Pending payment already on file — show notice instead of the form
+  const payRes = await api('GET', '/user/payments');
+  const payments = (payRes.ok && payRes.data && payRes.data.payments) || [];
+  const pending = payments.find(p => p.status === 'pending');
+
+  if (pending) {
+    wrap.innerHTML = `
+      <div class="pending-notice">
+        <strong>Payment already submitted</strong><br>
+        You submitted a payment ${esc(timeAgo(pending.created_at))} for ৳${pending.amount}. We're reviewing it — you'll get a notification the moment it's approved. Nothing to do right now.
+      </div>
+    `;
+    return;
+  }
+
+  // The full upgrade form
+  wrap.innerHTML = `
+    <ol class="steps">
+      <li>Message us on Telegram to get the exact amount and the payment number.</li>
+      <li>Send the money via <strong>bKash</strong>, <strong>Nagad</strong>, or <strong>Rocket</strong>.</li>
+      <li>Come back here and submit your transaction ID below.</li>
+      <li>We verify and unlock your account — usually within a few hours.</li>
+    </ol>
+
+    <div class="tg-cta">
+      <div class="tg-cta-text">
+        <div class="l">Step 1 — Message on Telegram</div>
+        <div class="v">@${esc(TELEGRAM_HANDLE)}</div>
+      </div>
+      <a class="tg-btn" href="https://t.me/${encodeURIComponent(TELEGRAM_HANDLE)}" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        Open Telegram
+      </a>
+    </div>
+
+    <div id="_alert"></div>
+    <div class="pay-form-head">Step 3 — Submit your payment</div>
+    <form id="payForm" autocomplete="off" novalidate>
+      <div class="field">
+        <label for="payPeriod">Plan</label>
+        <select class="select" id="payPeriod">
+          <option value="monthly">Monthly — ৳${CFG.plans.monthly.bdt} (${CFG.plans.monthly.days} days)</option>
+          <option value="yearly">Yearly — ৳${CFG.plans.yearly.bdt} (${CFG.plans.yearly.days} days)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="payMethod">Payment method you used</label>
+        <select class="select" id="payMethod">
+          <option value="bkash">bKash</option>
+          <option value="nagad">Nagad</option>
+          <option value="rocket">Rocket</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="payTrx">Transaction ID (TrxID)</label>
+        <input class="input" id="payTrx" type="text" maxlength="32" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. 8KJ2NM7P">
+        <p class="field-hint">The TrxID from your bKash/Nagad/Rocket confirmation SMS. 6–32 characters, letters and numbers only.</p>
+      </div>
+      <div class="field">
+        <label for="paySender">Number you paid from</label>
+        <input class="input" id="paySender" type="tel" maxlength="20" autocomplete="off" inputmode="tel" placeholder="e.g. 01711-223344">
+        <p class="field-hint">So we can match your payment on our side.</p>
+      </div>
+      <button class="btn btn-pri btn-lg" type="submit" id="paySubmit" style="width:100%">
+        Submit payment for review
+      </button>
+      <p class="field-hint" style="text-align:center;margin-top:12px">
+        This does not charge you. We verify manually and unlock your account.
+      </p>
+    </form>
+  `;
+
+  // Wire form
+  document.getElementById('payForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    setAlert('');
+    const period = document.getElementById('payPeriod').value;
+    const method = document.getElementById('payMethod').value;
+    const trx = document.getElementById('payTrx').value.trim().toUpperCase();
+    const sender = document.getElementById('paySender').value.trim();
+
+    if (!trx) { setAlert('Enter your transaction ID.'); document.getElementById('payTrx').focus(); return; }
+    if (!/^[A-Z0-9]{6,32}$/.test(trx)) { setAlert('Transaction ID should be 6–32 characters, letters and numbers only.'); document.getElementById('payTrx').focus(); return; }
+    if (!sender) { setAlert('Enter the number you paid from.'); document.getElementById('paySender').focus(); return; }
+    if (!/^[0-9+ -]{6,20}$/.test(sender)) { setAlert('Enter a valid phone number.'); document.getElementById('paySender').focus(); return; }
+
+    const btn = document.getElementById('paySubmit');
+    const original = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span>Submitting…';
+
+    const r = await api('POST', '/user/payments', {
+      method, period, trx_id: trx, sender
+    });
+
+    btn.disabled = false;
+    btn.innerHTML = original;
+
+    if (!r.ok) {
+      const msg = (r.data && r.data.error) || 'Could not submit. Please try again.';
+      setAlert(msg);
+      return;
+    }
+
+    showToast('Payment submitted. We\'ll notify you once it\'s reviewed.', 'success');
+    renderUpgrade();
+  });
+}
+
+/* ─── HELPERS ───────────────────────────────────────────────────────── */
+function timeAgo(ms){
+  if (!ms) return '';
+  const d = Math.floor((Date.now() - ms) / 1000);
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d / 60) + 'm ago';
+  if (d < 86400) return Math.floor(d / 3600) + 'h ago';
+  if (d < 2592000) return Math.floor(d / 86400) + 'd ago';
+  return new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+}
+
+/* ─── TELEGRAM FOOTER LINK ──────────────────────────────────────────── */
+function wireFooterTg(){
+  const a = document.getElementById('ftrTg');
+  if (a) {
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      window.open('https://t.me/' + encodeURIComponent(TELEGRAM_HANDLE), '_blank', 'noopener');
+    });
+  }
+}
+
+/* ─── BOOT ──────────────────────────────────────────────────────────── */
+async function boot(){
+  document.getElementById('yr').textContent = String(new Date().getFullYear());
+  renderHeader();
+  wireFooterTg();
+
+  await loadConfig();
+  renderPlans();
+  renderCompare();
+  await renderUpgrade();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+
+})();
+</script>
+</body>
+</html>
