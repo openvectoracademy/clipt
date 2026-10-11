@@ -1426,7 +1426,7 @@ async function openSignupModal(){
 /* ─── ADMIN SETUP MODAL ─────────────────────────────────────────────── */
 async function openAdminSetupModal(){
   const status = await api('GET', '/auth/admin-status');
-  const needsSetup = status.ok && status.data && status.data.setup;
+  const needsSetup = status.ok && status.data && !status.data.setup;
   if (!needsSetup) {
     // Admin already exists — nothing to do here.
     showToast('Admin is already set up. Use ?admin=1 to sign in.', 'info');
