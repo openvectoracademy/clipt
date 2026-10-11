@@ -110,6 +110,8 @@ export async function onRequest(ctx) {
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
   const code = String(params.code || '').toLowerCase();
 
+  if (RESERVED.has(code)) return ctx.next();
+
   const blocked = await rl('bad:' + ip, 10, 60, true);                 // too many invalid attempts? stop before touching D1
   if (!blocked.ok) return page(429, 'Too many attempts', 'Too many invalid short links from your network. Try again in a minute.', { 'Retry-After': String(blocked.retry) });
 
@@ -118,7 +120,7 @@ export async function onRequest(ctx) {
     return r.ok ? page(404, 'Link not found', 'This short link does not exist or was removed.')
                 : page(429, 'Too many attempts', 'Too many invalid short links from your network. Try again in a minute.', { 'Retry-After': String(r.retry) });
   };
-  if (!CODE_RE.test(code) || RESERVED.has(code)) return miss();
+  if (!CODE_RE.test(code)) return miss();
 
   let v;
   try { v = await lookup(code, env); }
