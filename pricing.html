@@ -10,11 +10,8 @@
 <link rel="icon" type="image/png" href="/clipt.png">
 <link rel="apple-touch-icon" href="/clipt.png">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet">
-
+<meta name="color-scheme" content="light dark"><meta name="theme-color" content="#fbfbfd">
+<script>try{var t=localStorage.getItem("clipt_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light")}catch(e){document.documentElement.setAttribute("data-theme","light")}</script>
 <style>
 /* ==========================================================================
    CLIPT — pricing.html
@@ -468,6 +465,70 @@ p{text-wrap:pretty}h1,h2,h3{text-wrap:balance}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
 }
+
+/* ═══ APPLE-STYLE THEME (light default, dark via [data-theme=dark]) ═══ */
+:root{--bg:#fbfbfd;--alt:#f5f5f7;--surface:#fff;--surface2:#f5f5f7;--surface3:#e8e8ed;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.16);
+--accent:#0071e3;--accent2:#0077ed;--accent-dim:rgba(0,113,227,.09);--white:#1d1d1f;--gray:#6e6e73;--gray2:#424245;
+--red:#d70015;--red-dim:rgba(215,0,21,.08);--green:#248a3d;--green-dim:rgba(36,138,61,.1);--orange:#b25000;--orange-dim:rgba(178,80,0,.1);
+--hover:rgba(0,0,0,.05);--hdr-bg:rgba(251,251,253,.8);--radius:12px;--radius-lg:20px;--hdr-h:56px;color-scheme:light;
+--font-head:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+--font-body:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+--font-mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+:root[data-theme="dark"]{--bg:#000;--alt:#0a0a0c;--surface:#1c1c1e;--surface2:#2c2c2e;--surface3:#3a3a3c;--border:rgba(255,255,255,.1);--border2:rgba(255,255,255,.2);
+--accent:#2997ff;--accent2:#0a84ff;--accent-dim:rgba(41,151,255,.14);--white:#f5f5f7;--gray:#98989d;--gray2:#c7c7cc;
+--red:#ff453a;--red-dim:rgba(255,69,58,.14);--green:#30d158;--green-dim:rgba(48,209,88,.14);--orange:#ff9f0a;--orange-dim:rgba(255,159,10,.14);
+--hover:rgba(255,255,255,.08);--hdr-bg:rgba(0,0,0,.72);color-scheme:dark}
+html,body{max-width:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--gray2);transition:background .25s,color .25s}
+.btn-pri,.prof .av-btn .av,.steps li::before,.user-chip .av{color:#fff}
+.cta-in::before,.plan.premium::before,.pricing-hero::before{background:none}
+.btn-ghost:hover,.btn-quiet:hover,.hnav a:hover,.ib-sm:hover,.ib:hover,.menu a:hover,.menu button:hover,.nav-i:hover,.user-chip:hover{background:var(--hover)}
+.input:hover,.select:hover,.textarea:hover{border-color:var(--gray)}
+.hdr{background:var(--hdr-bg);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--border)}
+.side{background:var(--surface);border-right:1px solid var(--border)}
+.side-sec{font-family:var(--font-body);text-transform:none;letter-spacing:0;font-size:12px;font-weight:600}
+.hnav a{font-size:14px;border-radius:980px}
+.btn,.ib{min-height:44px} .ib{min-width:44px}
+.btn{border-radius:980px;font-weight:500;letter-spacing:-.01em}
+.btn-pri{background:var(--accent);color:#fff;box-shadow:none} .btn-pri:hover{background:var(--accent2)}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+.input,.select,.textarea{background:var(--surface);border:1px solid var(--border2);border-radius:12px;min-height:48px}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim);outline:0}
+.pricing-hero{text-align:center}
+.pricing-hero h1{font-size:clamp(38px,8vw,72px);line-height:1.05;letter-spacing:-.035em;font-weight:700;color:var(--white)}
+.pricing-hero h1 em{font-style:normal}
+.eyebrow{text-transform:none;letter-spacing:0;font-family:var(--font-body);font-size:clamp(17px,2.4vw,21px);font-weight:600;color:var(--gray)}
+.pricing-hero p:not(.eyebrow){max-width:620px;margin-inline:auto;font-size:clamp(17px,2.2vw,21px);color:var(--gray)}
+.plan{border-radius:24px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.plan.premium{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.plan h2,.plan .price{font-weight:700;letter-spacing:-.03em;color:var(--white)}
+.plan-badge{text-transform:none;letter-spacing:0;font-family:var(--font-body);font-size:12px;font-weight:600}
+.compare h2,.faq-section h2,.cta-in h2,.upgrade h2{font-weight:700;letter-spacing:-.03em;color:var(--white)}
+.compare-table{border-radius:20px}
+.compare-row.head,.compare-row .col-free,.compare-row .col-prem{font-family:var(--font-body);text-transform:none;letter-spacing:0;font-size:13px;font-weight:600}
+.faq summary{font-weight:600;color:var(--white);font-size:17px}
+.cta-in{border:1px solid var(--border);border-radius:28px}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:22px;box-shadow:0 24px 80px rgba(0,0,0,.28)}
+.modal-overlay{background:rgba(0,0,0,.4);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.ftr{background:var(--alt);border-top:1px solid var(--border);padding:36px 0 8px}
+.ftr-in{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px 20px}
+.ftr-in>div:first-child{grid-column:1/-1}
+.ftr h5{font-family:var(--font-body);text-transform:none;letter-spacing:0;font-size:12px;font-weight:600;color:var(--white);margin-bottom:10px}
+.ftr a{font-size:13px;color:var(--gray)} .ftr a:hover{color:var(--accent)}
+.ftr p{font-size:13px;line-height:1.6}
+.ftr-b{font-size:12px;color:var(--gray);margin-top:28px;text-align:left}
+@media(min-width:720px){.ftr-in{grid-template-columns:2fr 1fr 1fr 1fr}.ftr-in>div:first-child{grid-column:auto}}
+
+/* ═══ SMALL-SCREEN HEADER (keeps sign-in / create-account / theme button on screen) ═══ */
+@media(max-width:520px){
+  .hdr-in{gap:6px;padding-inline:12px}
+  .hdr-r{gap:4px}
+  .hdr-r .btn{padding-inline:12px;font-size:13px;min-height:38px;white-space:nowrap}
+  .logo-word{font-size:17px}
+  #themeBtn{min-width:40px}
+}
+@media(max-width:430px){.logo-word{display:none}}
+#themeBtn .i-sun{display:none} :root[data-theme="dark"] #themeBtn .i-sun{display:block} :root[data-theme="dark"] #themeBtn .i-moon{display:none}
 </style>
 </head>
 <body>
@@ -515,6 +576,11 @@ p{text-wrap:pretty}h1,h2,h3{text-wrap:balance}
       <a href="/dashboard.html">Dashboard</a>
     </nav>
     <div class="hdr-r" id="hdrR"></div>
+    <button class="ib" id="themeBtn" type="button" aria-label="Toggle dark mode" title="Light / dark">
+      <svg class="i-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <svg class="i-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+    </button>
+    
   </div>
 </header>
 
@@ -1208,6 +1274,13 @@ if (document.readyState === 'loading') {
 }
 
 })();
+</script>
+<script>
+document.getElementById('themeBtn').addEventListener('click',function(){
+  var d=document.documentElement,n=d.getAttribute('data-theme')==='dark'?'light':'dark';
+  d.setAttribute('data-theme',n);try{localStorage.setItem('clipt_theme',n)}catch(e){}
+  var m=document.querySelector('meta[name=theme-color]');if(m)m.content=n==='dark'?'#000000':'#fbfbfd';
+});
 </script>
 </body>
 </html>
