@@ -529,6 +529,22 @@ body{background:var(--bg);color:var(--gray2);transition:background .25s,color .2
 }
 @media(max-width:430px){.logo-word{display:none}}
 #themeBtn .i-sun{display:none} :root[data-theme="dark"] #themeBtn .i-sun{display:block} :root[data-theme="dark"] #themeBtn .i-moon{display:none}
+
+/* ═══ ELITE POLISH LAYER ═══ */
+:root{--lift:0 1px 2px rgba(0,0,0,.04),0 12px 32px -8px rgba(0,0,0,.12);--glow:rgba(0,113,227,.16)}
+:root[data-theme="dark"]{--lift:0 1px 0 rgba(255,255,255,.04) inset,0 18px 44px -12px rgba(0,0,0,.7);--glow:rgba(41,151,255,.22)}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+::selection{background:var(--accent);color:#fff}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.6;cursor:progress}
+.btn-pri{box-shadow:0 6px 18px -6px var(--accent)}
+.plan,.plan-card,.feat,.step,.tg-cta,.guest-notice,.pending-notice{box-shadow:var(--lift)}
+.plan,.plan-card{transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s}
+.plan:hover,.plan-card:hover{transform:translateY(-3px);border-color:var(--border2)}
+.cta-band .cta-in{position:relative}
+.cta-band::before{content:"";position:absolute;inset:auto 0 0;height:70%;background:radial-gradient(50% 60% at 50% 100%,var(--glow),transparent 70%);pointer-events:none}
+.cta-band{position:relative;overflow:hidden}
 </style>
 </head>
 <body>
@@ -685,11 +701,11 @@ body{background:var(--bg);color:var(--gray2);transition:background .25s,color .2
   <section class="cta-band">
     <div class="shell">
       <div class="cta-in">
-        <h2>Still on the fence?</h2>
-        <p>Start free. You'll know within a week whether Premium is worth it.</p>
+        <h2 id="bandTitle">Still on the fence?</h2>
+        <p id="bandText">Start free. You'll know within a week whether Premium is worth it.</p>
         <div class="cta-actions">
-          <a href="/" class="btn btn-pri btn-lg">
-            Create free account
+          <a href="/?signup=1" class="btn btn-pri btn-lg" id="bandCta">
+            <span id="bandCtaLbl">Create free account</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </a>
           <a href="#upgrade" class="btn btn-ghost btn-lg">Jump to upgrade</a>
@@ -1260,6 +1276,13 @@ async function boot(){
   document.getElementById('yr').textContent = String(new Date().getFullYear());
   renderHeader();
   wireFooterTg();
+  if (getToken() && getUser()) {
+    const t = id => document.getElementById(id);
+    t('bandTitle').textContent = 'Ready when you are.';
+    t('bandText').textContent = 'Manage your links, usage and plan from your dashboard.';
+    t('bandCtaLbl').textContent = 'Open dashboard';
+    t('bandCta').href = '/dashboard.html';
+  }
 
   await loadConfig();
   renderPlans();
@@ -1267,6 +1290,7 @@ async function boot(){
   await renderUpgrade();
 }
 
+window.addEventListener('pageshow', e => { if (e.persisted) location.reload(); });
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', boot);
 } else {
