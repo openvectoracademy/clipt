@@ -1090,7 +1090,7 @@ async function loadDashboard(){
   const grid = document.getElementById('statsGrid');
   grid.innerHTML = '<div class="skel skel-tall"></div><div class="skel skel-tall"></div><div class="skel skel-tall"></div><div class="skel skel-tall"></div>';
   const r = await api('GET', '/admin/stats');
-  if (r.status === 401 || r.status === 403) { clearAuth(); window.location.href = '/?admin=1'; return; }
+  if (r.status === 401) { clearAuth(); window.location.href = '/?admin=1'; return; }
   if (!r.ok) {
     grid.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:40px 20px"><p style="color:var(--red)">' + esc((r.data && r.data.error) || 'Could not load stats.') + '</p></div>';
     return;
@@ -1201,7 +1201,7 @@ async function loadUsers(page){
   if (q) params.set('q', q);
   if (userFilter !== 'all') params.set('filter', userFilter);
   const r = await api('GET', '/admin/users?' + params.toString());
-  if (r.status === 401 || r.status === 403) { clearAuth(); window.location.href = '/?admin=1'; return; }
+  if (r.status === 401) { clearAuth(); window.location.href = '/?admin=1'; return; }
   if (!r.ok) {
     wrap.innerHTML = '<div class="empty" style="padding:32px"><p style="color:var(--red)">' + esc((r.data && r.data.error) || 'Could not load users.') + '</p></div>';
     pager.innerHTML = '';
