@@ -1129,7 +1129,7 @@ function copyText(text){
 /* ─── LOAD OVERVIEW ─────────────────────────────────────────────────── */
 async function loadOverview(silent){
   const r = await api('GET', '/user/overview?page=' + STATE.page);
-  if (r.status === 401) { clearAuth(); window.location.href = '/'; return; }
+  if (r.status === 401 || (r.status === 403 && r.data && r.data.error === 'Forbidden')) { clearAuth(); window.location.href = '/?signin=1'; return; }
   if (!r.ok) {
     if (!silent) showToast((r.data && r.data.error) || 'Could not load data.', 'error');
     return;
