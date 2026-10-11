@@ -728,6 +728,41 @@ main>section:nth-of-type(even){background:var(--alt)}
 @media(max-width:430px){.logo-word{display:none}}
 #themeBtn .i-sun{display:none} :root[data-theme="dark"] #themeBtn .i-sun{display:block} :root[data-theme="dark"] #themeBtn .i-moon{display:none}
 @media(max-width:520px){.shell{padding-inline:20px}.demo-box{padding:14px}}
+
+/* ═══ ELITE POLISH LAYER ═══ */
+:root{--ring:0 0 0 4px var(--accent-dim);--lift:0 1px 2px rgba(0,0,0,.04),0 12px 32px -8px rgba(0,0,0,.12);--glow:rgba(0,113,227,.16)}
+:root[data-theme="dark"]{--lift:0 1px 0 rgba(255,255,255,.04) inset,0 18px 44px -12px rgba(0,0,0,.7);--glow:rgba(41,151,255,.22)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+::selection{background:var(--accent);color:#fff}
+.hero::before{content:"";position:absolute;inset:-20% -10% auto;height:620px;background:radial-gradient(60% 60% at 50% 0%,var(--glow),transparent 70%);pointer-events:none;display:block}
+.hero-in>div:first-child{animation:heroIn .7s cubic-bezier(.2,.7,.2,1) both}
+@keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.hero h1{background:linear-gradient(180deg,var(--white) 30%,var(--gray));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero .eyebrow::before{display:none}
+.pill{display:inline-flex;align-items:center;gap:10px;margin:0 auto 22px;padding:7px 16px 7px 12px;border:1px solid var(--border2);border-radius:980px;background:var(--surface);font-size:14px;font-weight:500;color:var(--white);box-shadow:var(--lift);transition:transform var(--transition),border-color var(--transition)}
+.pill:hover{transform:translateY(-1px);border-color:var(--accent)}
+.pill .live{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--green-dim)}
+.pill b{color:var(--accent);font-weight:600}
+.demo-box{box-shadow:var(--lift);border-radius:24px;padding:20px;transition:border-color var(--transition),box-shadow var(--transition)}
+.demo-box:focus-within{border-color:var(--accent);box-shadow:var(--lift),var(--ring)}
+.demo-box .input{border:0;background:var(--alt);min-height:52px;font-size:16px}
+.demo-box .input:focus{box-shadow:none}
+.demo-box .btn{min-width:112px}
+.demo-result{margin-top:14px;padding:14px 16px;border-radius:16px;background:var(--accent-dim);border:1px solid transparent}
+.demo-result.err{background:var(--red-dim)}
+.demo-result .v{display:block;font-size:clamp(15px,3.6vw,19px);word-break:break-all;color:var(--white)}
+.demo-result .v a:hover{text-decoration:underline}
+.demo-acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.demo-acts .btn{min-height:40px;padding:0 18px;font-size:14px}
+.demo-msg{font-size:14px;color:var(--gray2);margin-top:8px}
+.demo-msg a{color:var(--accent);font-weight:500}
+.feat,.step{box-shadow:var(--lift);transition:transform .25s cubic-bezier(.2,.7,.2,1),border-color .25s}
+.feat:hover,.step:hover{transform:translateY(-3px);border-color:var(--border2)}
+.cta{border-radius:32px;background:linear-gradient(180deg,var(--surface),var(--alt));border:1px solid var(--border);box-shadow:var(--lift);position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:auto 0 -60% 0;height:80%;background:radial-gradient(50% 60% at 50% 100%,var(--glow),transparent 70%);display:block}
+.btn-pri{box-shadow:0 6px 18px -6px var(--accent)}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.6;cursor:progress}
 </style>
 </head>
 <body>
@@ -782,6 +817,7 @@ main>section:nth-of-type(even){background:var(--alt)}
   <section class="hero">
     <div class="shell hero-in">
       <div>
+        <div id="heroState"></div>
         <p class="eyebrow">Short links, honestly made</p>
         <h1>Shorten it.<br>Keep <em>control</em> of it.</h1>
         <p class="hero-lede">
@@ -790,17 +826,12 @@ main>section:nth-of-type(even){background:var(--alt)}
         </p>
 
         <div class="demo-box">
-          <label for="demoInput">Try it — paste a long URL</label>
+          <label for="demoInput" id="demoLabel">Try it — paste a long URL</label>
           <div class="demo-row">
             <input class="input" id="demoInput" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://example.com/very/long/path?with=params">
             <button class="btn btn-pri" id="demoBtn" type="button">Shorten</button>
           </div>
-          <div class="demo-result" id="demoResult" aria-live="polite">
-            <div class="k">Your link would look like</div>
-            <div class="v">
-              <span class="pre" id="demoPrefix">clipt.pages.dev/</span><span class="code" id="demoCode">a3k7x9</span>
-            </div>
-          </div>
+          <div class="demo-result" id="demoResult" aria-live="polite" hidden></div>
         </div>
 
         <ul class="hero-meta">
@@ -970,11 +1001,11 @@ main>section:nth-of-type(even){background:var(--alt)}
     <div class="shell">
       <div class="cta">
         <div class="cta-in">
-          <h2>Ready to shorten your first link?</h2>
-          <p>Create your free account in under a minute. No credit card, no upsells during signup.</p>
+          <h2 id="ctaTitle">Ready to shorten your first link?</h2>
+          <p id="ctaText">Create your free account in under a minute. No credit card, no upsells during signup.</p>
           <div class="cta-actions">
             <button class="btn btn-pri btn-lg" id="ctaSignup" type="button">
-              Create free account
+              <span id="ctaSignupLbl">Create free account</span>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
             <button class="btn btn-ghost btn-lg" id="ctaSignin" type="button">I already have an account</button>
@@ -1581,32 +1612,69 @@ async function openAdminSetupModal(){
   });
 }
 
-/* ─── LANDING — DEMO BOX ────────────────────────────────────────────── */
+/* ─── LANDING — SIGNED-IN AWARENESS ─────────────────────────────────── */
+const PK = 'clipt_pending_url';
+function isSigned(){ return !!(getToken() && getUser()); }
+function goDash(hash){ window.location.href = '/dashboard.html' + (hash || ''); }
+
+function refreshAuthUI(){
+  const u = getUser(), signed = isSigned();
+  const set = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t; };
+  const hs = document.getElementById('heroState');
+  if (hs) hs.innerHTML = signed
+    ? `<a class="pill" href="/dashboard.html"><span class="live"></span>Signed in as <b>${esc((u.name || u.email || 'you').split(' ')[0])}</b> · Open dashboard</a>`
+    : '';
+  set('demoLabel', signed ? 'Paste a long URL — it is saved to your account' : 'Try it — paste a long URL');
+  set('ctaTitle', signed ? 'Your dashboard is ready.' : 'Ready to shorten your first link?');
+  set('ctaText', signed ? 'Create links, track clicks and manage your plan in one place.' : 'Create your free account in under a minute. No credit card, no upsells during signup.');
+  set('ctaSignupLbl', signed ? 'Open dashboard' : 'Create free account');
+  set('ctaSignin', signed ? 'View pricing' : 'I already have an account');
+}
+
+/* ─── LANDING — HERO SHORTENER (real when signed in) ────────────────── */
 function wireDemo(){
   const input = document.getElementById('demoInput');
   const btn = document.getElementById('demoBtn');
   const out = document.getElementById('demoResult');
-  const codeEl = document.getElementById('demoCode');
-  const prefixEl = document.getElementById('demoPrefix');
-  if (!input || !btn) return;
-  prefixEl.textContent = location.host + '/';
-  const go = function(){
-    const v = input.value.trim();
-    if (!v) {
-      input.focus();
+  if (!input || !btn || !out) return;
+  const show = (html, isErr) => { out.innerHTML = html; out.className = 'demo-result on' + (isErr ? ' err' : ''); out.hidden = false; };
+  const go = async function(){
+    let v = input.value.trim();
+    if (!v) { input.focus(); return; }
+    if (!/^https?:\/\//i.test(v)) v = 'https://' + v;
+    if (!isSigned()) {
+      try { sessionStorage.setItem(PK, v); } catch {}
+      show(`<div class="k">Almost there</div><div class="demo-msg">Create a free account to get your short link. We will keep this URL ready for you.</div>
+        <div class="demo-acts"><button class="btn btn-pri" type="button" id="dmUp">Create free account</button><button class="btn btn-ghost" type="button" id="dmIn">Sign in</button></div>`);
+      document.getElementById('dmUp').addEventListener('click', () => openSignupModal());
+      document.getElementById('dmIn').addEventListener('click', () => openSigninModal());
       return;
     }
-    // Client-side demo — no API call. Just generate a fake code to show the shape.
-    const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
-    let code = '';
-    for (let i = 0; i < 6; i++) code += alphabet[Math.floor(Math.random() * alphabet.length)];
-    codeEl.textContent = code;
-    out.classList.add('on');
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Shortening…';
+    const { ok, data, status } = await api('POST', '/user/links', { url: v });
+    btn.disabled = false; btn.textContent = 'Shorten';
+    if (status === 401) {
+      clearAuth(); renderHeader(); refreshAuthUI();
+      try { sessionStorage.setItem(PK, v); } catch {}
+      showToast('Your session expired. Sign in to continue.', 'info');
+      openSigninModal();
+      return;
+    }
+    if (!ok) {
+      show(`<div class="demo-msg" style="margin:0">${esc(data.error || 'Could not shorten that link.')}${data.upgrade ? ' <a href="/pricing.html">See Premium</a>' : ''}</div>`, true);
+      return;
+    }
+    show(`<div class="k">Your short link</div><div class="v"><a href="${esc(data.short)}" target="_blank" rel="noopener">${esc(data.short.replace(/^https?:\/\//, ''))}</a></div>
+      <div class="demo-acts"><button class="btn btn-pri" type="button" id="dmCopy">Copy link</button><a class="btn btn-ghost" href="/dashboard.html">View in dashboard</a></div>`);
+    input.value = '';
+    document.getElementById('dmCopy').addEventListener('click', async function(){
+      try { await navigator.clipboard.writeText(data.short); this.textContent = 'Copied'; }
+      catch { this.textContent = 'Press and hold to copy'; }
+      setTimeout(() => { this.textContent = 'Copy link'; }, 1800);
+    });
   };
   btn.addEventListener('click', go);
-  input.addEventListener('keydown', function(e){
-    if (e.key === 'Enter') { e.preventDefault(); go(); }
-  });
+  input.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); go(); } });
 }
 
 /* ─── LANDING — CTA BUTTONS ─────────────────────────────────────────── */
@@ -1614,8 +1682,8 @@ function wireCtas(){
   const ctaSignup = document.getElementById('ctaSignup');
   const ctaSignin = document.getElementById('ctaSignin');
   const ftrContact = document.getElementById('ftrContact');
-  if (ctaSignup) ctaSignup.addEventListener('click', () => openSignupModal());
-  if (ctaSignin) ctaSignin.addEventListener('click', () => openSigninModal());
+  if (ctaSignup) ctaSignup.addEventListener('click', () => { isSigned() ? goDash() : openSignupModal(); });
+  if (ctaSignin) ctaSignin.addEventListener('click', () => { isSigned() ? (window.location.href = '/pricing.html') : openSigninModal(); });
   if (ftrContact) ftrContact.addEventListener('click', function(e){
     e.preventDefault();
     showToast('Reach us via the Telegram link on the Pricing page.', 'info');
@@ -1645,6 +1713,7 @@ function boot(){
   if (yr) yr.textContent = String(new Date().getFullYear());
 
   renderHeader();
+  refreshAuthUI();
   wireDemo();
   wireCtas();
   wireHeaderScroll();
@@ -1667,6 +1736,7 @@ function boot(){
   // leave them here — no forced redirect. Only dashboard/admin redirect away.
 }
 
+window.addEventListener('pageshow', function(e){ if (e.persisted) { renderHeader(); refreshAuthUI(); } });
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', boot);
 } else {
