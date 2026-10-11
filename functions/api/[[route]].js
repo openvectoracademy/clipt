@@ -675,7 +675,7 @@ async function handleAdmin(method, path, body, db, user, x) {
     else if (q) {
       const hi = q.slice(0, -1) + String.fromCharCode(q.charCodeAt(q.length - 1) + 1);
       r = await db.prepare(`SELECT ${cols} FROM links WHERE code>=? AND code<? ORDER BY code LIMIT ? OFFSET ?`).bind(q, hi, PAGE + 1, off).all();
-    } else return json({ links: [], hasMore: false, page, hint: true });
+    } else r = await db.prepare(`SELECT ${cols} FROM links ORDER BY created_at DESC LIMIT ? OFFSET ?`).bind(PAGE + 1, off).all();
     return json({ links: r.results.slice(0, PAGE), hasMore: r.results.length > PAGE, page });
   }
   if (method === 'DELETE' && (m = path.match(/^\/admin\/links\/([a-z0-9_-]{2,32})$/))) {
