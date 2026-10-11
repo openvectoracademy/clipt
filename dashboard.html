@@ -1714,6 +1714,15 @@ async function boot(){
   const startView = VIEWS.indexOf(h) !== -1 ? h : 'links';
   showView(startView);
 
+  // URL handed over from the landing page (before sign-in or via ?url=)
+  try {
+    const qp = new URLSearchParams(location.search).get('url');
+    const pend = qp || sessionStorage.getItem('clipt_pending_url');
+    sessionStorage.removeItem('clipt_pending_url');
+    const ci = document.getElementById('clUrl');
+    if (pend && ci) { ci.value = pend; setTimeout(() => { ci.focus(); ci.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 350); }
+  } catch {}
+
   await loadOverview();
 
   // Load notifications count for bell
