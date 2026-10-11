@@ -1052,6 +1052,12 @@ function setAuth(token, user){
     localStorage.setItem(UK, JSON.stringify(user));
   } catch {}
 }
+function setAdminAuth(token, user){
+  try {
+    localStorage.setItem('clipt_admin_token', token);
+    localStorage.setItem('clipt_admin_user', JSON.stringify(user));
+  } catch {}
+}
 function clearAuth(){
   try {
     localStorage.removeItem(TK);
@@ -1317,7 +1323,7 @@ function openSigninModal(adminMode){
       showAlert(data.error || 'Could not sign in.');
       return;
     }
-    setAuth(data.token, data.user);
+    if (isAdmin) setAdminAuth(data.token, data.user); else setAuth(data.token, data.user);
     showToast('Welcome back.', 'success');
     closeModal();
     setTimeout(() => {
@@ -1488,7 +1494,7 @@ async function openAdminSetupModal(){
       showAlert(data.error || 'Could not create admin.');
       return;
     }
-    setAuth(data.token, data.user);
+    setAdminAuth(data.token, data.user);
     showToast('Admin account created.', 'success');
     closeModal();
     setTimeout(() => { window.location.href = '/abmin.html'; }, 500);
