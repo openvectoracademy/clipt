@@ -1284,7 +1284,7 @@ async function wireBell(){
 function openSigninModal(adminMode){
   const isAdmin = adminMode === true || new URLSearchParams(location.search).get('admin') === '1';
   openModal(
-    isAdmin ? 'Admin sign in' : 'Sign in',
+    'Sign in',
     `
       <div id="_alert"></div>
       <form id="signinForm" autocomplete="on" novalidate>
@@ -1315,7 +1315,7 @@ function openSigninModal(adminMode){
     if (!email || !password) { showAlert('Please fill in both fields.'); return; }
     btn.disabled = true;
     btn.innerHTML = '<span class="spin"></span>Signing in…';
-    const path = isAdmin ? '/auth/admin-login' : '/auth/login';
+    const path = '/auth/login';
     const { ok, data } = await api('POST', path, { email, password });
     if (!ok) {
       btn.disabled = false;
@@ -1323,12 +1323,25 @@ function openSigninModal(adminMode){
       showAlert(data.error || 'Could not sign in.');
       return;
     }
-    if (isAdmin) setAdminAuth(data.token, data.user); else setAuth(data.token, data.user);
+    setAuth(data.token, data.user);
+    if (data.user && data.user.role === 'admin') {
+      setAdminAuth(data.token, data.user);
+      openModal(
+        'Welcome back, admin',
+        `<p style="margin:0 0 16px;color:var(--text-2,#a0adb8)">Where do you want to go?</p>
+         <div style="display:grid;gap:10px">
+           <button class="btn btn-pri" type="button" id="goAdmin" style="width:100%">Admin panel</button>
+           <button class="btn btn-ghost" type="button" id="goSite" style="width:100%">Website (my links)</button>
+         </div>`,
+        ''
+      );
+      document.getElementById('goAdmin').addEventListener('click', () => { window.location.href = '/abmin.html'; });
+      document.getElementById('goSite').addEventListener('click', () => { window.location.href = '/dashboard.html'; });
+      return;
+    }
     showToast('Welcome back.', 'success');
     closeModal();
-    setTimeout(() => {
-      window.location.href = isAdmin ? '/abmin.html' : '/dashboard.html';
-    }, 400);
+    setTimeout(() => { window.location.href = '/dashboard.html'; }, 400);
   });
   // Allow submit via the footer button (which is outside the form element)
   document.getElementById('signinSubmit').addEventListener('click', function(e){
@@ -1494,6 +1507,7 @@ async function openAdminSetupModal(){
       showAlert(data.error || 'Could not create admin.');
       return;
     }
+    setAuth(data.token, data.user);
     setAdminAuth(data.token, data.user);
     showToast('Admin account created.', 'success');
     closeModal();
