@@ -424,15 +424,18 @@ async function handleAuth(method, path, body, db, x) {
         return err('An account already exists on this device.', 409);
     }
     const salt = randHex(16), approved = st.require_approval === '1' ? 0 : 1;
-    try {
-      await db.prepare("INSERT INTO users (name,email,password,salt,role,is_approved,device_id,created_at) VALUES (?,?,?,?,'user',?,?,?)")
+    try {                                                // very first account on a fresh database becomes the approved admin
+      await db.prepare(`INSERT INTO users (name,email,password,salt,role,is_approved,device_id,created_at)
+        SELECT ?1,?2,?3,?4, CASE WHEN c=0 THEN 'admin' ELSE 'user' END, CASE WHEN c=0 THEN 1 ELSE ?5 END, ?6, ?7
+        FROM (SELECT COUNT(*) AS c FROM users)`)
         .bind(name, email, await hashPw(pw, salt), salt, approved, device, Date.now()).run();
     } catch (e) {
       if (/UNIQUE/i.test(String(e.message))) return err('That email is already registered.', 409);
       throw e;
     }
-    if (!approved) return json({ pending: true, message: 'Account created. An admin must approve it before you can log in.' }, 201);
     const u = await db.prepare('SELECT * FROM users WHERE email=?').bind(email).first();
+    if (u.role === 'admin') G.__adm = true;
+    if (!u.is_approved) return json({ pending: true, message: 'Account created. An admin must approve it before you can log in.' }, 201);
     return json({ token: await mkToken(u, x.secret), user: pubUser(u) }, 201);
   }
 
