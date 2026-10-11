@@ -445,7 +445,7 @@ async function handleAuth(method, path, body, db, x) {
     if (wait) return tooMany(wait, 'Too many failed attempts. Try again in a few minutes.');
     const email = normEmail(body.email), pw = String(body.password || '');
     const u = email ? await db.prepare('SELECT * FROM users WHERE email=?').bind(email).first() : null;
-    const roleOk = u && (admin ? u.role === 'admin' : u.role === 'user');
+    const roleOk = u && (admin ? u.role === 'admin' : (u.role === 'user' || u.role === 'admin'));   // one login for everyone
     if (!roleOk || !safeEq(await hashPw(pw, u.salt), u.password)) {
       await loginFail(db, x.ip);
       return err('Invalid email or password.', 401);
@@ -789,7 +789,7 @@ export async function onRequest(context) {
       const user = await getUser(request, secret);
       if (!user) return err('Please log in again.', 401);
       const want = path.startsWith('/admin/') ? 'admin' : 'user';
-      if (user.role !== want) return err('Forbidden', 403);
+      if (want === 'admin' ? user.role !== 'admin' : (user.role !== 'user' && user.role !== 'admin')) return err('Forbidden', 403);   // admins can also use the website
       if (user.exp - Date.now() < 15 * DAY) x.newToken = await signToken({ ...user, exp: Date.now() + 30 * DAY }, secret);
       const prem = user.pl === 1 && user.pu > Date.now();
       const lim = await rl('api:' + user.id, want === 'admin' ? 240 : (prem ? LIM.premium.api : LIM.free.api), 60);
