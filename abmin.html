@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#05080f">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Clipt</title>
+<link rel="icon" type="image/png" href="/clipt.png">
+<link rel="apple-touch-icon" href="/clipt.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#05080f;--surface:#0b0f1a;--surface2:#111827;--surface3:#161e2e;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.11);
+  --accent:#00d4aa;--accent2:#00b894;--accent-dim:rgba(0,212,170,0.08);
+  --white:#f0f4f8;--gray:#7a8899;--gray2:#a0adb8;
+  --red:#f0566a;--red-dim:rgba(240,86,106,0.09);
+  --green:#10d48e;--green-dim:rgba(16,212,142,0.09);
+  --orange:#f59e0b;--orange-dim:rgba(245,158,11,0.09);
+  --radius:9px;--radius-lg:13px;--transition:.18s cubic-bezier(.4,0,.2,1);
+  --font-head:'Cormorant Garamond',Georgia,serif;
+  --font-body:'Cabinet Grotesk',system-ui,-apple-system,sans-serif;
+  --font-mono:'DM Mono',ui-monospace,Menlo,monospace;
+  --hdr-h:64px;--side-w:260px;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:border-box}
+*{margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--hdr-h) + 20px)}
+body{
+  font-family:var(--font-body);font-size:16px;line-height:1.55;
+  color:var(--gray2);background:var(--bg);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;min-height:100dvh;
+  padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);
+}
+img,svg{display:block;max-width:100%}img{height:auto}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+a{color:inherit;text-decoration:none}
+ul,ol{list-style:none}
+input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,h4,h5{font-family:var(--font-head);font-weight:600;color:var(--white);letter-spacing:-.01em;line-height:1.15}
+p{text-wrap:pretty}h1,h2,h3{text-wrap:balance}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+:focus:not(:focus-visible){outline:none}
+
+.logo{display:inline-flex;align-items:center;gap:10px;flex-shrink:0}
+.logo img{height:32px;width:auto;border-radius:6px}
+.logo-word{font-family:var(--font-head);font-size:22px;font-weight:600;color:var(--white);letter-spacing:-.015em}
+.logo-badge{
+  font-family:var(--font-mono);font-size:9.5px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 7px;border-radius:5px;
+  background:var(--accent-dim);color:var(--accent);
+  margin-left:2px;
+}
+
+.hdr{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:calc(var(--hdr-h) + var(--sat));padding-top:var(--sat);
+  background:rgba(5,8,15,.85);
+  backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid transparent;transition:border-color var(--transition);
+}
+.hdr.scrolled{border-bottom-color:var(--border)}
+.hdr-in{
+  display:flex;align-items:center;gap:20px;height:var(--hdr-h);
+  width:100%;max-width:1200px;margin:0 auto;padding-inline:20px;
+}
+@media(min-width:720px){.hdr-in{padding-inline:32px}}
+@media(min-width:1024px){.hdr-in{padding-inline:40px}}
+
+.hdr-r{display:flex;align-items:center;gap:8px;margin-left:auto}
+.ib{
+  width:44px;height:44px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:9px;color:var(--gray2);position:relative;
+  transition:background var(--transition),color var(--transition);
+  -webkit-tap-highlight-color:transparent;
+}
+.ib:hover{background:rgba(255,255,255,.05);color:var(--white)}
+.ib-sm{
+  width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+  border-radius:7px;color:var(--gray);
+  transition:background var(--transition),color var(--transition);
+}
+.ib-sm:hover{background:rgba(255,255,255,.06);color:var(--white)}
+#menuBtn{display:inline-flex}
+
+.prof{position:relative}
+.prof .av-btn::after{
+  content:"";width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  position:absolute;
+}
+.prof .av-btn .av{
+  position:relative;z-index:1;font-family:var(--font-body);
+  font-size:10px;font-weight:700;color:#04110d;letter-spacing:.02em;
+}
+.menu{
+  position:absolute;top:calc(100% + 6px);right:0;min-width:220px;
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);
+  box-shadow:0 12px 32px rgba(0,0,0,.5);padding:6px;display:none;z-index:110;
+}
+.menu.open{display:block;animation:menuIn .14s ease-out}
+@keyframes menuIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.menu-h{padding:10px 12px 8px;border-bottom:1px solid var(--border);margin-bottom:6px}
+.menu-h strong{display:block;font-size:13px;color:var(--white);font-weight:600}
+.menu-h span{font-size:11.5px;color:var(--gray);word-break:break-all}
+.menu a,.menu button{
+  display:flex;align-items:center;gap:10px;width:100%;
+  padding:9px 12px;border-radius:7px;font-size:13.5px;font-weight:500;
+  color:var(--gray2);text-align:left;
+  transition:background var(--transition),color var(--transition);
+}
+.menu a:hover,.menu button:hover{background:rgba(255,255,255,.05);color:var(--white)}
+.menu .danger{color:var(--red)}
+.menu .danger:hover{background:var(--red-dim);color:var(--red)}
+.menu-sep{height:1px;background:var(--border);margin:6px 0}
+
+.dot{position:absolute;top:8px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg)}
+
+.side{
+  position:fixed;top:0;left:0;bottom:0;width:var(--side-w);max-width:88vw;z-index:120;
+  background:var(--surface);border-right:1px solid var(--border2);
+  transform:translateX(-100%);
+  transition:transform .24s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  padding:var(--sat) 0 var(--sab);overflow-y:auto;
+}
+.side.open{transform:translateX(0);box-shadow:0 0 60px rgba(0,0,0,.5)}
+.side-top{padding:20px 20px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.side-nav{flex:1;padding:14px 12px}
+.side-sec{
+  font-family:var(--font-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--gray);
+  padding:14px 12px 6px;
+}
+.nav-i{
+  display:flex;align-items:center;gap:12px;width:100%;
+  padding:11px 12px;border-radius:8px;font-size:14px;font-weight:500;
+  color:var(--gray2);text-align:left;position:relative;
+  transition:background var(--transition),color var(--transition);
+}
+.nav-i:hover{background:rgba(255,255,255,.04);color:var(--white)}
+.nav-i.on{background:var(--accent-dim);color:var(--accent)}
+.nav-i svg{flex-shrink:0;opacity:.9}
+.nav-i .cnt{
+  margin-left:auto;font-family:var(--font-mono);font-size:10.5px;
+  background:var(--red);color:#fff;padding:1px 7px;border-radius:99px;
+  font-weight:600;letter-spacing:.02em;
+}
+.side-bot{border-top:1px solid var(--border);padding:14px 16px;flex-shrink:0}
+.user-chip{
+  display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:9px;
+}
+.user-chip .av{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-body);font-size:13px;font-weight:700;color:#04110d;
+}
+.user-chip .meta{min-width:0;flex:1}
+.user-chip .meta strong{display:block;font-size:13.5px;font-weight:600;color:var(--white);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-chip .meta span{display:block;font-size:11.5px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.scrim{
+  position:fixed;inset:0;z-index:110;background:rgba(0,0,0,.6);
+  backdrop-filter:blur(2px);opacity:0;visibility:hidden;
+  transition:opacity var(--transition),visibility var(--transition);
+}
+.scrim.on{opacity:1;visibility:visible}
+
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:44px;padding:0 18px;border-radius:var(--radius);
+  font-family:var(--font-body);font-size:14px;font-weight:600;
+  letter-spacing:-.005em;white-space:nowrap;border:1px solid transparent;cursor:pointer;
+  transition:background var(--transition),border-color var(--transition),color var(--transition),transform var(--transition);
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn:active{transform:translateY(1px)}
+.btn-sm{height:36px;padding:0 14px;font-size:13px}
+.btn-xs{height:32px;padding:0 11px;font-size:12px;border-radius:7px}
+.btn-pri{background:var(--accent);color:#04110d;border-color:var(--accent)}
+.btn-pri:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-ghost{background:transparent;color:var(--white);border-color:var(--border2)}
+.btn-ghost:hover{border-color:var(--gray);background:rgba(255,255,255,.03)}
+.btn-quiet{background:transparent;color:var(--gray2);border-color:transparent;padding:0 12px}
+.btn-quiet:hover{color:var(--white);background:rgba(255,255,255,.04)}
+.btn-danger{background:var(--red-dim);color:var(--red);border-color:rgba(240,86,106,.25)}
+.btn-danger:hover{background:rgba(240,86,106,.15);border-color:var(--red)}
+.btn-warn{background:var(--orange-dim);color:var(--orange);border-color:rgba(245,158,11,.25)}
+.btn-warn:hover{background:rgba(245,158,11,.15);border-color:var(--orange)}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-family:var(--font-mono);font-size:11px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:7px;
+}
+.input,.select,.textarea{
+  width:100%;height:46px;padding:0 14px;
+  background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);
+  font-family:var(--font-body);font-size:15px;color:var(--white);outline:none;
+  transition:border-color var(--transition),background var(--transition);
+}
+.input:hover,.select:hover,.textarea:hover{border-color:rgba(255,255,255,.18)}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);background:var(--surface3)}
+.input::placeholder,.textarea::placeholder{color:var(--gray);opacity:.7}
+.input[aria-invalid="true"]{border-color:var(--red)}
+.textarea{height:auto;padding:12px 14px;resize:vertical;min-height:80px;line-height:1.5}
+.field-hint{font-size:12.5px;color:var(--gray);margin-top:6px;line-height:1.5}
+
+.toast{
+  position:fixed;left:20px;right:20px;bottom:calc(20px + var(--sab));z-index:200;
+  max-width:420px;margin:0 auto;padding:14px 18px;
+  background:var(--surface3);border:1px solid var(--border2);
+  border-left:3px solid var(--accent);border-radius:var(--radius-lg);
+  font-size:14px;color:var(--white);box-shadow:0 8px 32px rgba(0,0,0,.5);
+  transform:translateY(120%);opacity:0;visibility:hidden;
+  transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s,visibility .28s;
+  pointer-events:none;
+}
+.toast.show{transform:translateY(0);opacity:1;visibility:visible}
+.toast-success{border-left-color:var(--accent)}
+.toast-error{border-left-color:var(--red)}
+.toast-info{border-left-color:var(--orange)}
+@media(min-width:720px){.toast{left:auto;right:24px;bottom:calc(24px + var(--sab));margin:0}}
+
+.modal-overlay{
+  position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.72);
+  backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;animation:fadeIn .16s ease-out}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{
+  width:100%;max-width:460px;max-height:calc(100dvh - 40px);
+  background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);
+  box-shadow:0 24px 64px rgba(0,0,0,.6);display:flex;flex-direction:column;
+  animation:modalIn .18s cubic-bezier(.4,0,.2,1);overflow:hidden;
+}
+.modal.wide{max-width:680px}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+.modal-h{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:18px 20px 14px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.modal-h h3{font-family:var(--font-head);font-size:22px;font-weight:600;color:var(--white);letter-spacing:-.015em;line-height:1.2}
+.modal-b{padding:20px;overflow-y:auto;flex:1;min-height:0}
+.modal-f{padding:14px 20px 18px;border-top:1px solid var(--border);display:flex;gap:10px;flex-shrink:0}
+.modal-f .btn{flex:1}
+@media(max-width:520px){
+  .modal-overlay{padding:12px;align-items:flex-end}
+  .modal{border-radius:16px 16px 0 0;max-height:92dvh;padding-bottom:var(--sab)}
+  .modal-h{padding:22px 18px 14px}
+  .modal-b{padding:18px}
+  .modal-f{padding:12px 18px calc(16px + var(--sab))}
+}
+#_alert{display:none;padding:11px 14px;border-radius:var(--radius);font-size:13.5px;line-height:1.5;margin-bottom:16px}
+#_alert.show{display:block}
+#_alert.error{background:var(--red-dim);color:var(--red);border:1px solid rgba(240,86,106,.25)}
+#_alert.info{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(0,212,170,.25)}
+#_alert.warn{background:var(--orange-dim);color:var(--orange);border:1px solid rgba(245,158,11,.25)}
+
+.main{padding-top:calc(var(--hdr-h) + var(--sat));min-height:100dvh;display:flex;flex-direction:column}
+.app-wrap{width:100%;max-width:1200px;margin:0 auto;padding:32px 20px 80px;flex:1}
+@media(min-width:720px){.app-wrap{padding:40px 32px 96px}}
+@media(min-width:1024px){.app-wrap{padding-inline:40px}}
+
+.page-head{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.page-head h1{font-family:var(--font-head);font-size:clamp(28px,4.4vw,40px);font-weight:600;letter-spacing:-.02em;color:var(--white);margin-bottom:8px}
+.page-head p{font-size:15px;color:var(--gray2);max-width:640px}
+.page-head .page-actions{display:flex;gap:8px;flex-shrink:0}
+
+@media(min-width:861px){
+  body.has-side .side{transform:translateX(0)}
+  body.has-side .scrim{display:none}
+  body.has-side .hdr{left:var(--side-w)}
+  body.has-side .hdr-in{max-width:none}
+  body.has-side .app-wrap{margin-left:var(--side-w);max-width:none;width:calc(100% - var(--side-w))}
+  body.has-side #menuBtn{display:none}
+}
+
+.view{display:none}
+.view.on{display:block;animation:viewIn .2s ease-out}
+@keyframes viewIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;
+}
+.card-h{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:18px;flex-wrap:wrap;
+}
+.card-h h2{font-family:var(--font-head);font-size:22px;font-weight:600;color:var(--white);letter-spacing:-.015em;margin:0}
+.card-h .sub{font-size:13px;color:var(--gray);margin-top:2px}
+
+.stats-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:16px}
+@media(min-width:640px){.stats-grid{grid-template-columns:repeat(2,1fr);gap:16px}}
+@media(min-width:960px){.stats-grid{grid-template-columns:repeat(4,1fr)}}
+.stat{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:20px 22px;
+}
+.stat .k{
+  font-family:var(--font-mono);font-size:10.5px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--gray);margin-bottom:10px;
+}
+.stat .v{font-family:var(--font-head);font-size:32px;font-weight:600;color:var(--white);letter-spacing:-.02em;line-height:1}
+.stat .m{font-size:12.5px;color:var(--gray);margin-top:6px}
+.stat.accent .v{color:var(--accent)}
+.stat.warn .v{color:var(--orange)}
+
+.row-list{display:flex;flex-direction:column;gap:10px}
+.row-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+  display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;
+  transition:border-color var(--transition);
+}
+.row-item:hover{border-color:var(--border2)}
+.row-main{min-width:0}
+.row-title{font-size:14.5px;font-weight:600;color:var(--white);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-sub{font-size:12.5px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:8px;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray)}
+.row-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+@media(max-width:640px){.row-item{grid-template-columns:1fr}.row-actions{justify-content:flex-end}}
+
+.badge{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:99px;
+  font-family:var(--font-mono);font-size:10px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.badge.free{background:var(--surface3);color:var(--gray2)}
+.badge.premium{background:var(--accent-dim);color:var(--accent)}
+.badge.approved{background:var(--green-dim);color:var(--green)}
+.badge.pending{background:var(--orange-dim);color:var(--orange)}
+.badge.rejected{background:var(--red-dim);color:var(--red)}
+.badge.blocked{background:var(--red-dim);color:var(--red)}
+.badge.unapproved{background:var(--orange-dim);color:var(--orange)}
+
+.filters{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.search-box{position:relative;flex:1;min-width:200px}
+.search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray);pointer-events:none}
+.search-box .input{padding-left:38px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{
+  padding:7px 14px;border-radius:99px;
+  font-family:var(--font-mono);font-size:11px;font-weight:500;
+  letter-spacing:.06em;text-transform:uppercase;
+  background:var(--surface2);border:1px solid var(--border);color:var(--gray2);
+  cursor:pointer;transition:all var(--transition);
+  -webkit-tap-highlight-color:transparent;
+}
+.chip:hover{border-color:var(--border2);color:var(--white)}
+.chip.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+.pager{display:flex;justify-content:center;gap:8px;margin-top:20px;flex-wrap:wrap;align-items:center}
+.pager-info{font-family:var(--font-mono);font-size:12px;color:var(--gray);padding:0 8px}
+
+.empty{text-align:center;padding:48px 20px;color:var(--gray2)}
+.empty svg{margin:0 auto 16px;color:var(--gray);opacity:.5}
+.empty h3{font-family:var(--font-head);font-size:20px;font-weight:600;color:var(--white);margin-bottom:6px}
+.empty p{font-size:14px;color:var(--gray);max-width:400px;margin:0 auto}
+
+.skel{
+  background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);
+  background-size:200% 100%;animation:shimmer 1.4s linear infinite;
+  border-radius:var(--radius);
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-row{height:72px;margin-bottom:10px}
+.skel-tall{height:120px;margin-bottom:16px}
+
+.setting-item{padding:16px 0;border-bottom:1px solid var(--border)}
+.setting-item:last-child{border-bottom:none;padding-bottom:0}
+.setting-item .row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.setting-item .l{flex:1;min-width:0}
+.setting-item label{font-size:14.5px;font-weight:600;color:var(--white);display:block;margin-bottom:4px}
+.setting-item .desc{font-size:13px;color:var(--gray);line-height:1.55;margin-bottom:8px}
+.toggle{
+  position:relative;display:inline-flex;align-items:center;gap:10px;cursor:pointer;
+  font-size:13.5px;font-weight:600;color:var(--white);flex-shrink:0;
+}
+.toggle input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.toggle .sw{
+  width:44px;height:24px;border-radius:24px;background:var(--surface3);
+  border:1px solid var(--border2);position:relative;
+  transition:background var(--transition),border-color var(--transition);
+  flex-shrink:0;
+}
+.toggle .sw::after{
+  content:"";position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;background:var(--gray2);
+  transition:transform var(--transition),background var(--transition);
+}
+.toggle input:checked + .sw{background:var(--accent-dim);border-color:var(--accent)}
+.toggle input:checked + .sw::after{transform:translateX(20px);background:var(--accent)}
+.toggle input:focus-visible + .sw{outline:2px solid var(--accent);outline-offset:2px}
+
+.ftr{background:var(--surface);border-top:1px solid var(--border);padding:40px 0 20px}
+.ftr-in{
+  width:100%;max-width:1200px;margin:0 auto;padding-inline:20px;
+  display:grid;grid-template-columns:1fr;gap:28px;
+}
+@media(min-width:720px){.ftr-in{padding-inline:32px;grid-template-columns:2fr 1fr 1fr 1fr}}
+@media(min-width:1024px){.ftr-in{padding-inline:40px}}
+body.has-side .ftr-in{margin-left:var(--side-w);max-width:none}
+.ftr h5{font-family:var(--font-mono);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
+.ftr ul{display:flex;flex-direction:column;gap:8px}
+.ftr a{font-size:13.5px;color:var(--gray2);transition:color var(--transition)}
+.ftr a:hover{color:var(--accent)}
+.ftr p{font-size:13px;line-height:1.7;color:var(--gray);margin-top:14px;max-width:320px}
+.ftr-b{
+  width:100%;max-width:1200px;margin:36px auto 0;
+  padding:18px 20px calc(18px + var(--sab));
+  border-top:1px solid var(--border);
+  font-size:12.5px;color:var(--gray);text-align:center;
+}
+@media(min-width:720px){.ftr-b{padding-inline:32px}}
+@media(min-width:1024px){.ftr-b{padding-inline:40px}}
+body.has-side .ftr-b{margin-left:var(--side-w);max-width:none}
+
+.hidden{display:none !important}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(0,0,0,.2);border-top-color:currentColor;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.btn .spin{margin-right:2px}
+.btn-ghost .spin{border-color:rgba(255,255,255,.2);border-top-color:var(--white)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body class="has-side">
+
+<!-- SIDEBAR -->
+<aside class="side" id="side" aria-label="Navigation">
+  <div class="side-top">
+    <a href="/" class="logo">
+      <img src="/clipt.png" alt="Clipt">
+      <span class="logo-word">Clipt</span>
+      <span class="logo-badge">Admin</span>
+    </a>
+  </div>
+  <nav class="side-nav">
+    <div class="side-sec">Manage</div>
+    <button class="nav-i" data-view="dashboard">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Overview
+    </button>
+    <button class="nav-i" data-view="users">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></svg>
+      Users
+    </button>
+    <button class="nav-i" data-view="links">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Links
+    </button>
+    <button class="nav-i" data-view="payments">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 15h3"/></svg>
+      Payments
+      <span class="cnt" id="navPay" hidden>0</span>
+    </button>
+    <button class="nav-i" data-view="settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2.2"/><circle cx="9" cy="12" r="2.2"/><circle cx="17" cy="18" r="2.2"/></svg>
+      Settings
+    </button>
+    <button class="nav-i" data-view="account">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l3 3"/></svg>
+      Admin account
+    </button>
+    <div class="side-sec">Shortcuts</div>
+    <a class="nav-i" href="/" target="_blank" rel="noopener">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+      Public site
+    </a>
+    <a class="nav-i" href="/dashboard.html">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+      User view
+    </a>
+  </nav>
+  <div class="side-bot" id="sideBot"></div>
+</aside>
+<div class="scrim" id="scrim"></div>
+
+<!-- HEADER -->
+<header class="hdr" id="hdr">
+  <div class="hdr-in">
+    <button class="ib" id="menuBtn" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <a href="/" class="logo">
+      <img src="/clipt.png" alt="Clipt">
+      <span class="logo-word">Clipt</span>
+      <span class="logo-badge">Admin</span>
+    </a>
+    <div class="hdr-r">
+      <button class="ib" id="bellBtn" aria-label="Pending payments">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>
+        <span class="dot" id="bellDot" hidden></span>
+      </button>
+      <div class="prof">
+        <button class="ib av-btn" id="profBtn" aria-label="Account menu" aria-haspopup="true" aria-expanded="false">
+          <span class="av" id="hdrAv">A</span>
+        </button>
+        <div class="menu" id="profMenu">
+          <div class="menu-h">
+            <strong id="menuName">Admin</strong>
+            <span id="menuEmail"></span>
+          </div>
+          <button type="button" data-go="dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Overview
+          </button>
+          <a href="/" target="_blank" rel="noopener">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+            Public site
+          </a>
+          <div class="menu-sep"></div>
+          <button type="button" class="danger" id="signOutBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4M16 8l4 4-4 4M20 12H9"/></svg>
+            Sign out
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+  <div class="app-wrap">
+
+    <!-- VIEW: OVERVIEW -->
+    <div class="view" id="view-dashboard">
+      <header class="page-head">
+        <div>
+          <h1>Overview</h1>
+          <p>A snapshot of the whole platform.</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost btn-sm" id="refreshStats" type="button">Refresh</button>
+        </div>
+      </header>
+
+      <div class="stats-grid" id="statsGrid">
+        <div class="skel skel-tall"></div>
+        <div class="skel skel-tall"></div>
+        <div class="skel skel-tall"></div>
+        <div class="skel skel-tall"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <h2>Recent users</h2>
+          <p class="sub">Newest first</p>
+        </div>
+        <div id="recentUsers">
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: USERS -->
+    <div class="view" id="view-users">
+      <header class="page-head">
+        <div>
+          <h1>Users</h1>
+          <p>Search, filter, and manage every account.</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost btn-sm" id="refreshUsers" type="button">Refresh</button>
+        </div>
+      </header>
+
+      <div class="card">
+        <div class="filters">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+            <input class="input" id="userSearch" type="text" placeholder="Search by name or email" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="chips" id="userFilters">
+            <button class="chip on" data-filter="all" type="button">All</button>
+            <button class="chip" data-filter="premium" type="button">Premium</button>
+            <button class="chip" data-filter="pending" type="button">Pending</button>
+            <button class="chip" data-filter="blocked" type="button">Blocked</button>
+          </div>
+        </div>
+        <div id="usersList">
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+        </div>
+        <div class="pager" id="usersPager"></div>
+      </div>
+    </div>
+
+    <!-- VIEW: LINKS -->
+    <div class="view" id="view-links">
+      <header class="page-head">
+        <div>
+          <h1>Links</h1>
+          <p>Search any short link by its code.</p>
+        </div>
+      </header>
+
+      <div class="card">
+        <div class="filters">
+          <div class="search-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+            <input class="input" id="linkSearch" type="text" placeholder="Search by code (e.g. launch)" autocomplete="off" spellcheck="false" autocapitalize="off">
+          </div>
+          <button class="btn btn-pri btn-sm" id="linkSearchBtn" type="button">Search</button>
+        </div>
+        <div id="linksAdminList">
+          <div class="empty" style="padding:40px 20px">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+            <h3>Search to begin</h3>
+            <p>Enter a short code above to see its details and manage it.</p>
+          </div>
+        </div>
+        <div class="pager" id="linksPager"></div>
+      </div>
+    </div>
+
+    <!-- VIEW: PAYMENTS -->
+    <div class="view" id="view-payments">
+      <header class="page-head">
+        <div>
+          <h1>Payments</h1>
+          <p>Review premium payment submissions. Approve or reject.</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-ghost btn-sm" id="refreshPay" type="button">Refresh</button>
+        </div>
+      </header>
+
+      <div class="card">
+        <div class="chips" id="payFilters" style="margin-bottom:16px">
+          <button class="chip on" data-status="pending" type="button">Pending</button>
+          <button class="chip" data-status="approved" type="button">Approved</button>
+          <button class="chip" data-status="rejected" type="button">Rejected</button>
+        </div>
+        <div id="paymentsList">
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+        </div>
+        <div class="pager" id="paymentsPager"></div>
+      </div>
+    </div>
+
+    <!-- VIEW: SETTINGS -->
+    <div class="view" id="view-settings">
+      <header class="page-head">
+        <div>
+          <h1>Settings</h1>
+          <p>Site-wide configuration. Changes take effect immediately.</p>
+        </div>
+      </header>
+
+      <form id="settingsForm">
+        <div class="card">
+          <div class="card-h"><h2>Payments</h2></div>
+          <div class="setting-item">
+            <div class="l">
+              <label for="stTelegram">Telegram handle</label>
+              <p class="desc">Users contact you here to receive the payment number. Shown on the pricing page. Enter without the @.</p>
+              <input class="input" id="stTelegram" type="text" placeholder="yourhandle" autocomplete="off" autocapitalize="off" spellcheck="false" style="max-width:320px">
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="l">
+              <label for="stPayNote">Payment note</label>
+              <p class="desc">Optional note shown above the payment form on the pricing page.</p>
+              <textarea class="textarea" id="stPayNote" rows="2" placeholder="e.g. Send the exact amount, then paste the TrxID below."></textarea>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="l">
+              <label for="stSupport">Support email</label>
+              <p class="desc">Shown on the pricing page for questions.</p>
+              <input class="input" id="stSupport" type="email" placeholder="support@example.com" autocomplete="off" autocapitalize="off" spellcheck="false" style="max-width:320px">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>Signups</h2></div>
+          <div class="setting-item">
+            <div class="row">
+              <div class="l">
+                <label>Registration open</label>
+                <p class="desc">When off, new signups are blocked.</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="stRegistration"><span class="sw"></span><span id="stRegistrationLbl">On</span></label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="row">
+              <div class="l">
+                <label>Require approval</label>
+                <p class="desc">New accounts wait for admin approval before they can sign in.</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="stApproval"><span class="sw"></span><span id="stApprovalLbl">Off</span></label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="row">
+              <div class="l">
+                <label>One account per device</label>
+                <p class="desc">Recommended. Blocks multiple accounts from the same device.</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="stOneDevice"><span class="sw"></span><span id="stOneDeviceLbl">On</span></label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-h"><h2>Platform</h2></div>
+          <div class="setting-item">
+            <div class="row">
+              <div class="l">
+                <label>Read-only mode</label>
+                <p class="desc">When on, link creation is paused. Existing links keep working.</p>
+              </div>
+              <label class="toggle"><input type="checkbox" id="stReadOnly"><span class="sw"></span><span id="stReadOnlyLbl">Off</span></label>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="l">
+              <label for="stBlocked">Blocked domains</label>
+              <p class="desc">Comma-separated. Users can't shorten links pointing to these domains.</p>
+              <textarea class="textarea" id="stBlocked" rows="2" placeholder="spam-site.com, malicious.example"></textarea>
+            </div>
+          </div>
+          <div class="setting-item">
+            <div class="l">
+              <label for="stAnn">Announcement</label>
+              <p class="desc">Shown as a banner at the top of every user's dashboard. Leave blank to hide.</p>
+              <textarea class="textarea" id="stAnn" rows="2" placeholder="e.g. Scheduled maintenance on Sunday 2 AM."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-pri" type="submit" id="settingsSaveBtn">Save settings</button>
+          <button class="btn btn-quiet" type="button" id="settingsResetBtn">Reset to saved</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- VIEW: ADMIN ACCOUNT -->
+    <div class="view" id="view-account">
+      <header class="page-head">
+        <div>
+          <h1>Admin account</h1>
+          <p>Change your admin email or password.</p>
+        </div>
+      </header>
+
+      <div class="card">
+        <div class="card-h"><h2>Update credentials</h2></div>
+        <form id="adminForm" autocomplete="off" novalidate>
+          <div id="_adminAlert"></div>
+          <div class="field">
+            <label for="adEmail">Email address</label>
+            <input class="input" id="adEmail" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" placeholder="admin@example.com">
+          </div>
+          <div class="field">
+            <label for="adCurrent">Current password</label>
+            <input class="input" id="adCurrent" type="password" autocomplete="current-password" placeholder="Required to save any change">
+          </div>
+          <div class="field">
+            <label for="adNew">New password <span style="color:var(--gray);text-transform:none;letter-spacing:0">(leave blank to keep current)</span></label>
+            <input class="input" id="adNew" type="password" autocomplete="new-password" minlength="10" maxlength="72" placeholder="At least 10 characters">
+          </div>
+          <div class="field">
+            <label for="adConfirm">Confirm new password</label>
+            <input class="input" id="adConfirm" type="password" autocomplete="new-password" minlength="10" maxlength="72" placeholder="Type it again">
+          </div>
+          <button class="btn btn-pri" type="submit" id="adminSaveBtn">Save changes</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-h"><h2>Session</h2></div>
+        <p style="font-size:14px;color:var(--gray2);line-height:1.6;margin-bottom:16px">
+          Signing out ends this session on this device only. Other devices stay signed in until they sign out.
+        </p>
+        <button class="btn btn-danger" type="button" id="adminSignOut">Sign out</button>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="ftr">
+    <div class="ftr-in">
+      <div>
+        <a href="/" class="logo" style="margin-bottom:12px">
+          <img src="/clipt.png" alt="Clipt">
+          <span class="logo-word">Clipt</span>
+        </a>
+        <p>Admin panel. All actions are logged against the admin account.</p>
+      </div>
+      <div>
+        <h5>Platform</h5>
+        <ul>
+          <li><a href="/" target="_blank" rel="noopener">Public site</a></li>
+          <li><a href="/dashboard.html">User dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Shortcuts</h5>
+        <ul>
+          <li><a href="#" data-go="payments">Pending payments</a></li>
+          <li><a href="#" data-go="users">Users</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Terms of use</a></li>
+          <li><a href="#">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ftr-b">© <span id="yr"></span> Clipt. All rights reserved.</div>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="modal-overlay" id="gModal" role="dialog" aria-modal="true" aria-labelledby="gTitle">
+  <div class="modal" id="gModalInner">
+    <div class="modal-h">
+      <h3 id="gTitle">Modal</h3>
+      <button class="ib-sm" id="gClose" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="modal-b" id="gBody"></div>
+    <div class="modal-f" id="gFoot"></div>
+  </div>
+</div>
+
+<script>
+/* ==========================================================================
+   CLIPT — abmin.html
+   Admin app. All routes match the existing backend exactly.
+   No new endpoints required.
+
+   User modal strategy: the backend exposes only GET /admin/users?page=N and
+   optional ?q=&filter=. There is no /admin/users/:id route. So when the admin
+   clicks "Manage" on a row, we:
+     1. Try the in-memory cache (populated when the list rendered).
+     2. If the user isn't cached, fetch /admin/users?page=1 (and subsequent
+        pages up to 5) and find the matching id. This is bounded and cheap.
+     3. Render the modal from the found record.
+   No monkey-patching, no multiple script blocks, no fallbacks.
+   ========================================================================== */
+(function(){
+'use strict';
+
+/* ─── AUTH STORAGE (admin uses distinct keys from the user pages) ───── */
+const TK = 'clipt_admin_token';
+const UK = 'clipt_admin_user';
+function getToken(){ try { return localStorage.getItem(TK); } catch { return null; } }
+function getUser(){ try { return JSON.parse(localStorage.getItem(UK) || 'null'); } catch { return null; } }
+function clearAuth(){
+  try {
+    localStorage.removeItem(TK);
+    localStorage.removeItem(UK);
+  } catch {}
+}
+
+/* ─── XSS ESCAPER ───────────────────────────────────────────────────── */
+function esc(s){
+  const d = document.createElement('div');
+  d.textContent = String(s == null ? '' : s);
+  return d.innerHTML;
+}
+
+/* ─── API CLIENT ────────────────────────────────────────────────────── */
+async function api(method, path, body){
+  const opts = {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + (getToken() || '')
+    }
+  };
+  if (body !== undefined && body !== null) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch('/api' + path, opts);
+    const nt = res.headers.get('X-New-Token');
+    if (nt) { try { localStorage.setItem(TK, nt); } catch {} }
+    let data = {};
+    try { data = await res.json(); } catch {}
+    return { ok: res.ok, data, status: res.status };
+  } catch (e) {
+    return { ok: false, data: { error: 'Network error. Please try again.' }, status: 0 };
+  }
+}
+
+/* ─── TOAST ─────────────────────────────────────────────────────────── */
+let toastT = null;
+function showToast(msg, type){
+  type = type || 'success';
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.className = 'toast toast-' + type + ' show';
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+/* ─── MODAL ─────────────────────────────────────────────────────────── */
+function openModal(title, bodyHtml, footerHtml, wide){
+  const m = document.getElementById('gModal');
+  document.getElementById('gModalInner').classList.toggle('wide', !!wide);
+  document.getElementById('gTitle').textContent = title;
+  document.getElementById('gBody').innerHTML = bodyHtml;
+  document.getElementById('gFoot').innerHTML = footerHtml || '';
+  m.classList.add('open');
+  document.documentElement.style.overflow = 'hidden';
+  setTimeout(() => {
+    const f = m.querySelector('.input, button.btn-pri');
+    if (f) { try { f.focus(); } catch {} }
+  }, 60);
+}
+function closeModal(){
+  document.getElementById('gModal').classList.remove('open');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('gClose').addEventListener('click', closeModal);
+document.getElementById('gModal').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') {
+    if (document.getElementById('gModal').classList.contains('open')) closeModal();
+    else closeSidebar();
+  }
+});
+
+/* ─── SIDEBAR ───────────────────────────────────────────────────────── */
+const isDesktop = () => window.matchMedia('(min-width: 861px)').matches;
+function openSidebar(){
+  document.getElementById('side').classList.add('open');
+  document.getElementById('scrim').classList.add('on');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', 'true');
+  document.documentElement.style.overflow = 'hidden';
+}
+function closeSidebar(){
+  document.getElementById('side').classList.remove('open');
+  document.getElementById('scrim').classList.remove('on');
+  document.getElementById('menuBtn').setAttribute('aria-expanded', 'false');
+  document.documentElement.style.overflow = '';
+}
+document.getElementById('menuBtn').addEventListener('click', function(){
+  const side = document.getElementById('side');
+  if (side.classList.contains('open')) closeSidebar();
+  else openSidebar();
+});
+document.getElementById('scrim').addEventListener('click', closeSidebar);
+window.addEventListener('resize', function(){
+  if (isDesktop()) closeSidebar();
+});
+
+/* ─── PROFILE MENU ──────────────────────────────────────────────────── */
+const profBtn = document.getElementById('profBtn');
+const profMenu = document.getElementById('profMenu');
+profBtn.addEventListener('click', function(e){
+  e.stopPropagation();
+  const open = profMenu.classList.toggle('open');
+  profBtn.setAttribute('aria-expanded', String(open));
+});
+document.addEventListener('click', function(e){
+  if (!profMenu.contains(e.target) && e.target !== profBtn) {
+    profMenu.classList.remove('open');
+    profBtn.setAttribute('aria-expanded', 'false');
+  }
+});
+function signOut(){
+  clearAuth();
+  window.location.href = '/?admin=1';
+}
+document.getElementById('signOutBtn').addEventListener('click', signOut);
+document.getElementById('adminSignOut').addEventListener('click', signOut);
+profMenu.querySelectorAll('[data-go]').forEach(function(b){
+  b.addEventListener('click', function(){
+    showView(b.getAttribute('data-go'));
+    profMenu.classList.remove('open');
+  });
+});
+
+/* ─── HEADER SCROLL ─────────────────────────────────────────────────── */
+const hdrEl = document.getElementById('hdr');
+let hdrTick = false;
+window.addEventListener('scroll', function(){
+  if (hdrTick) return;
+  hdrTick = true;
+  requestAnimationFrame(function(){
+    hdrEl.classList.toggle('scrolled', window.scrollY > 6);
+    hdrTick = false;
+  });
+}, { passive: true });
+
+/* ─── VIEW ROUTER ───────────────────────────────────────────────────── */
+const VIEWS = ['dashboard', 'users', 'links', 'payments', 'settings', 'account'];
+function showView(name){
+  if (VIEWS.indexOf(name) === -1) name = 'dashboard';
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
+  const v = document.getElementById('view-' + name);
+  if (v) v.classList.add('on');
+  document.querySelectorAll('.nav-i[data-view]').forEach(n => {
+    n.classList.toggle('on', n.getAttribute('data-view') === name);
+  });
+  try { history.replaceState(null, '', '#' + name); } catch {}
+  if (window.scrollY > 100) window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'users') loadUsers(1);
+  if (name === 'payments') loadPayments(1);
+  if (name === 'settings') loadSettings();
+  if (name === 'account') loadAdminAccount();
+}
+document.querySelectorAll('.nav-i[data-view]').forEach(function(n){
+  n.addEventListener('click', function(){
+    showView(n.getAttribute('data-view'));
+    if (!isDesktop()) closeSidebar();
+  });
+});
+document.querySelectorAll('[data-go]').forEach(function(a){
+  a.addEventListener('click', function(e){
+    e.preventDefault();
+    showView(a.getAttribute('data-go'));
+  });
+});
+window.addEventListener('hashchange', function(){
+  const h = (location.hash || '').replace('#', '');
+  if (VIEWS.indexOf(h) !== -1) showView(h);
+});
+
+/* ─── FORMATTERS ────────────────────────────────────────────────────── */
+function fmtDate(ms){
+  if (!ms) return '—';
+  return new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function fmtNum(n){
+  n = Number(n) || 0;
+  return n.toLocaleString();
+}
+function timeAgo(ms){
+  if (!ms) return '';
+  const d = Math.floor((Date.now() - ms) / 1000);
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d / 60) + 'm ago';
+  if (d < 86400) return Math.floor(d / 3600) + 'h ago';
+  if (d < 2592000) return Math.floor(d / 86400) + 'd ago';
+  return fmtDate(ms);
+}
+function setAlert(id, msg, type){
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (!msg) { el.className = ''; el.textContent = ''; return; }
+  el.textContent = msg;
+  el.className = 'show ' + (type || 'error');
+}
+
+/* ─── USER CACHE (populated whenever the user list renders) ─────────── */
+const USER_CACHE = Object.create(null);
+function cacheUser(u){ if (u && u.id) USER_CACHE[u.id] = u; }
+function cacheUsers(list){ (list || []).forEach(cacheUser); }
+
+/* ─── BACKEND: /admin/stats returns a flat object with these keys ───── */
+let pendingPayCount = 0;
+
+async function loadDashboard(){
+  const grid = document.getElementById('statsGrid');
+  grid.innerHTML = '<div class="skel skel-tall"></div><div class="skel skel-tall"></div><div class="skel skel-tall"></div><div class="skel skel-tall"></div>';
+  const r = await api('GET', '/admin/stats');
+  if (r.status === 401 || r.status === 403) { clearAuth(); window.location.href = '/?admin=1'; return; }
+  if (!r.ok) {
+    grid.innerHTML = '<div class="card" style="grid-column:1/-1;text-align:center;padding:40px 20px"><p style="color:var(--red)">' + esc((r.data && r.data.error) || 'Could not load stats.') + '</p></div>';
+    return;
+  }
+  const d = r.data;
+  pendingPayCount = d.pending_payments || 0;
+  updatePendingBadge();
+
+  grid.innerHTML = `
+    <div class="stat">
+      <div class="k">Total users</div>
+      <div class="v">${fmtNum(d.users)}</div>
+      <div class="m">${d.today ? '+' + fmtNum(d.today) + ' today' : 'no new today'}</div>
+    </div>
+    <div class="stat accent">
+      <div class="k">Premium</div>
+      <div class="v">${fmtNum(d.premium)}</div>
+      <div class="m">${d.users ? Math.round((d.premium / d.users) * 100) + '% of users' : '—'}</div>
+    </div>
+    <div class="stat">
+      <div class="k">Active links</div>
+      <div class="v">${fmtNum(d.links)}</div>
+      <div class="m">across all users</div>
+    </div>
+    <div class="stat ${d.pending_payments ? 'warn' : ''}">
+      <div class="k">Total clicks</div>
+      <div class="v">${fmtNum(d.clicks)}</div>
+      <div class="m">${d.pending_payments ? fmtNum(d.pending_payments) + ' payment' + (d.pending_payments === 1 ? '' : 's') + ' pending' : 'no pending payments'}</div>
+    </div>
+  `;
+
+  const u = await api('GET', '/admin/users?page=1');
+  const list = document.getElementById('recentUsers');
+  if (!u.ok || !u.data.users) {
+    list.innerHTML = '<div class="empty" style="padding:32px"><p>Could not load users.</p></div>';
+    return;
+  }
+  cacheUsers(u.data.users);
+  list.innerHTML = '<div class="row-list">' + u.data.users.slice(0, 6).map(userRowHtml).join('') + '</div>';
+  wireRowButtons(list);
+}
+
+function userRowHtml(x){
+  const isPrem = x.plan === 'premium' && x.plan_until > Date.now();
+  const badges = [];
+  if (isPrem) badges.push('<span class="badge premium">Premium</span>');
+  else badges.push('<span class="badge free">Free</span>');
+  if (!x.is_approved) badges.push('<span class="badge unapproved">Pending</span>');
+  if (x.is_blocked) badges.push('<span class="badge blocked">Blocked</span>');
+  return `<div class="row-item">
+    <div class="row-main">
+      <div class="row-title">${esc(x.name || '—')} <span style="color:var(--gray);font-weight:400;font-size:13px;margin-left:6px">${esc(x.email || '')}</span></div>
+      <div class="row-meta">
+        <span>${x.active_links || 0} links</span>
+        <span>joined ${esc(timeAgo(x.created_at))}</span>
+        ${badges.join(' ')}
+      </div>
+    </div>
+    <div class="row-actions">
+      <button class="btn btn-ghost btn-xs" type="button" data-manage="${x.id}">Manage</button>
+    </div>
+  </div>`;
+}
+
+function wireRowButtons(container){
+  container.querySelectorAll('[data-manage]').forEach(function(b){
+    b.addEventListener('click', function(){
+      openUserModal(parseInt(b.getAttribute('data-manage'), 10));
+    });
+  });
+}
+
+function updatePendingBadge(){
+  const el = document.getElementById('navPay');
+  const dot = document.getElementById('bellDot');
+  if (!el) return;
+  if (pendingPayCount > 0) {
+    el.hidden = false;
+    el.textContent = pendingPayCount > 99 ? '99+' : String(pendingPayCount);
+    if (dot) dot.hidden = false;
+  } else {
+    el.hidden = true;
+    if (dot) dot.hidden = true;
+  }
+}
+
+document.getElementById('refreshStats').addEventListener('click', function(){
+  loadDashboard();
+  showToast('Refreshed.', 'info');
+});
+document.getElementById('bellBtn').addEventListener('click', function(){
+  showView('payments');
+});
+
+/* ═════════════════════════════════════════════════════════════════════
+   USERS
+   ═════════════════════════════════════════════════════════════════════ */
+let userFilter = 'all';
+let userSearchT = null;
+
+async function loadUsers(page){
+  page = page || 1;
+  const wrap = document.getElementById('usersList');
+  const pager = document.getElementById('usersPager');
+  wrap.innerHTML = '<div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div>';
+  const q = document.getElementById('userSearch').value.trim();
+  const params = new URLSearchParams({ page: String(page) });
+  if (q) params.set('q', q);
+  if (userFilter !== 'all') params.set('filter', userFilter);
+  const r = await api('GET', '/admin/users?' + params.toString());
+  if (r.status === 401 || r.status === 403) { clearAuth(); window.location.href = '/?admin=1'; return; }
+  if (!r.ok) {
+    wrap.innerHTML = '<div class="empty" style="padding:32px"><p style="color:var(--red)">' + esc((r.data && r.data.error) || 'Could not load users.') + '</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  const users = (r.data && r.data.users) || [];
+  cacheUsers(users);
+  if (!users.length) {
+    wrap.innerHTML = '<div class="empty"><h3>No users found</h3><p>Try a different search or filter.</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = '<div class="row-list">' + users.map(userRowHtml).join('') + '</div>';
+  wireRowButtons(wrap);
+
+  pager.innerHTML = `
+    <button class="btn btn-ghost btn-sm" ${page <= 1 ? 'disabled' : ''} data-page="${page - 1}">← Previous</button>
+    <span class="pager-info">Page ${page}</span>
+    <button class="btn btn-ghost btn-sm" ${!r.data.hasMore ? 'disabled' : ''} data-page="${page + 1}">Next →</button>
+  `;
+  pager.querySelectorAll('[data-page]').forEach(function(b){
+    b.addEventListener('click', function(){ loadUsers(parseInt(b.getAttribute('data-page'), 10)); });
+  });
+}
+
+document.getElementById('userSearch').addEventListener('input', function(){
+  clearTimeout(userSearchT);
+  userSearchT = setTimeout(() => loadUsers(1), 300);
+});
+document.getElementById('refreshUsers').addEventListener('click', function(){
+  loadUsers(1);
+  showToast('Refreshed.', 'info');
+});
+document.getElementById('userFilters').addEventListener('click', function(e){
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  document.querySelectorAll('#userFilters .chip').forEach(c => c.classList.remove('on'));
+  b.classList.add('on');
+  userFilter = b.getAttribute('data-filter');
+  loadUsers(1);
+});
+
+/* ─── FETCH A USER BY ID (no dedicated endpoint; search pages) ──────── */
+async function fetchUserById(id){
+  if (USER_CACHE[id]) return USER_CACHE[id];
+  // Walk up to 5 pages of the default user list (no filter), stop early if found.
+  for (let p = 1; p <= 5; p++) {
+    const r = await api('GET', '/admin/users?page=' + p);
+    if (!r.ok || !r.data || !Array.isArray(r.data.users)) break;
+    cacheUsers(r.data.users);
+    if (USER_CACHE[id]) return USER_CACHE[id];
+    if (!r.data.hasMore) break;
+  }
+  return null;
+}
+
+/* ─── USER MANAGE MODAL ─────────────────────────────────────────────── */
+async function openUserModal(id){
+  openModal('Loading…', '<div class="skel" style="height:120px"></div>', '');
+  const u = await fetchUserById(id);
+  if (!u) {
+    closeModal();
+    showToast('Could not load that user. Try refreshing the list.', 'error');
+    return;
+  }
+  renderUserModal(u);
+}
+
+function renderUserModal(u){
+  const isPrem = u.plan === 'premium' && u.plan_until > Date.now();
+  const badges = [];
+  if (isPrem) badges.push('<span class="badge premium">Premium</span>');
+  else badges.push('<span class="badge free">Free</span>');
+  if (!u.is_approved) badges.push('<span class="badge unapproved">Pending approval</span>');
+  if (u.is_blocked) badges.push('<span class="badge blocked">Blocked</span>');
+
+  const html = `
+    <div id="_uAlert"></div>
+    <div style="display:grid;grid-template-columns:1fr;gap:18px">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:6px">Account</div>
+        <div style="font-size:16px;font-weight:600;color:var(--white)">${esc(u.name || '—')}</div>
+        <div style="font-size:13px;color:var(--gray2);margin-top:2px;word-break:break-all">${esc(u.email || '')}</div>
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">${badges.join('')}</div>
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px">
+        <div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:8px">Stats</div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:13px">
+          <div><div style="color:var(--gray);font-size:11px">Active links</div><div style="color:var(--white);font-family:var(--font-mono);font-size:16px;margin-top:2px">${u.active_links || 0}</div></div>
+          <div><div style="color:var(--gray);font-size:11px">Aliases</div><div style="color:var(--white);font-family:var(--font-mono);font-size:16px;margin-top:2px">${u.alias_count || 0}</div></div>
+          <div><div style="color:var(--gray);font-size:11px">Joined</div><div style="color:var(--white);font-family:var(--font-mono);font-size:14px;margin-top:4px">${esc(fmtDate(u.created_at))}</div></div>
+        </div>
+        ${isPrem ? '<div style="margin-top:10px;font-size:12.5px;color:var(--gray)">Premium until <strong style="color:var(--accent)">' + esc(fmtDate(u.plan_until)) + '</strong></div>' : ''}
+      </div>
+
+      <div style="border-top:1px solid var(--border);padding-top:14px">
+        <div style="font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:10px">Actions</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          ${!u.is_approved ? '<button class="btn btn-pri btn-sm" type="button" data-act="approve">Approve account</button>' : ''}
+          <button class="btn btn-ghost btn-sm" type="button" data-act="notify">Send notification</button>
+          <button class="btn btn-ghost btn-sm" type="button" data-act="password">Reset password</button>
+          <button class="btn ${isPrem ? 'btn-ghost' : 'btn-pri'} btn-sm" type="button" data-act="plan">${isPrem ? 'Set as Free' : 'Make Premium'}</button>
+          ${u.is_blocked
+            ? '<button class="btn btn-warn btn-sm" type="button" data-act="unblock">Unblock</button>'
+            : '<button class="btn btn-warn btn-sm" type="button" data-act="block">Block account</button>'}
+          <button class="btn btn-danger btn-sm" type="button" data-act="delete">Delete account</button>
+        </div>
+      </div>
+    </div>
+  `;
+  openModal(u.name || u.email, html, '<button class="btn btn-ghost" type="button" id="umClose">Close</button>', true);
+  document.getElementById('umClose').addEventListener('click', closeModal);
+
+  document.querySelectorAll('[data-act]').forEach(function(b){
+    b.addEventListener('click', function(){
+      const act = b.getAttribute('data-act');
+      if (act === 'approve') actApprove(u);
+      else if (act === 'notify') actNotify(u);
+      else if (act === 'password') actPassword(u);
+      else if (act === 'plan') actPlan(u);
+      else if (act === 'block') actBlock(u, true);
+      else if (act === 'unblock') actBlock(u, false);
+      else if (act === 'delete') actDelete(u);
+    });
+  });
+}
+
+async function actApprove(u){
+  if (!confirm('Approve ' + u.email + '?')) return;
+  const r = await api('POST', '/admin/users/' + u.id + '/approve', {});
+  if (!r.ok) { showToast((r.data && r.data.error) || 'Could not approve.', 'error'); return; }
+  closeModal();
+  showToast('Account approved.', 'success');
+  delete USER_CACHE[u.id];
+  loadUsers();
+}
+
+function actNotify(u){
+  openModal('Send notification',
+    `<div id="_uAlert"></div>
+     <div class="field"><label for="notTitle">Title</label><input class="input" id="notTitle" maxlength="80" placeholder="Short title"></div>
+     <div class="field"><label for="notBody">Message</label><textarea class="textarea" id="notBody" maxlength="500" rows="3" placeholder="Optional message"></textarea></div>`,
+    '<button class="btn btn-ghost" type="button" id="notCancel">Cancel</button><button class="btn btn-pri" type="button" id="notSend">Send</button>'
+  );
+  document.getElementById('notCancel').addEventListener('click', closeModal);
+  document.getElementById('notSend').addEventListener('click', async function(){
+    const title = document.getElementById('notTitle').value.trim();
+    const body = document.getElementById('notBody').value.trim();
+    if (!title) { setAlert('_uAlert', 'Title is required.'); return; }
+    const r = await api('POST', '/admin/users/' + u.id + '/notify', { title, body });
+    if (!r.ok) { setAlert('_uAlert', (r.data && r.data.error) || 'Could not send.'); return; }
+    closeModal();
+    showToast('Notification sent.', 'success');
+  });
+}
+
+function actPassword(u){
+  openModal('Reset password',
+    `<div id="_uAlert"></div>
+     <div class="field"><label for="newPw">New password</label><input class="input" id="newPw" type="text" maxlength="72" placeholder="At least 8 characters"></div>
+     <p class="field-hint">Copy this password and send it to the user securely.</p>`,
+    '<button class="btn btn-ghost" type="button" id="pwCancel">Cancel</button><button class="btn btn-pri" type="button" id="pwSet">Set password</button>'
+  );
+  document.getElementById('pwCancel').addEventListener('click', closeModal);
+  document.getElementById('pwSet').addEventListener('click', async function(){
+    const pw = document.getElementById('newPw').value;
+    if (pw.length < 8) { setAlert('_uAlert', 'At least 8 characters.'); return; }
+    const r = await api('POST', '/admin/users/' + u.id + '/password', { password: pw });
+    if (!r.ok) { setAlert('_uAlert', (r.data && r.data.error) || 'Could not set password.'); return; }
+    closeModal();
+    showToast('Password updated.', 'success');
+  });
+}
+
+async function actPlan(u){
+  const isPrem = u.plan === 'premium' && u.plan_until > Date.now();
+  if (isPrem) {
+    if (!confirm('Switch ' + u.email + ' back to Free?')) return;
+    const r = await api('POST', '/admin/users/' + u.id + '/plan', { plan: 'free' });
+    if (!r.ok) { showToast('Could not change plan.', 'error'); return; }
+    closeModal();
+    showToast('Set to Free.', 'success');
+    delete USER_CACHE[u.id];
+    loadUsers();
+    return;
+  }
+  openModal('Give Premium',
+    `<div id="_uAlert"></div>
+     <div class="field"><label for="planDays">Duration (days)</label><input class="input" id="planDays" type="number" min="1" max="3650" value="30"></div>
+     <p class="field-hint">Extends existing premium time if the user already has some.</p>`,
+    '<button class="btn btn-ghost" type="button" id="planCancel">Cancel</button><button class="btn btn-pri" type="button" id="planGo">Give Premium</button>'
+  );
+  document.getElementById('planCancel').addEventListener('click', closeModal);
+  document.getElementById('planGo').addEventListener('click', async function(){
+    const days = parseInt(document.getElementById('planDays').value, 10);
+    if (!(days >= 1 && days <= 3650)) { setAlert('_uAlert', 'Choose 1–3650 days.'); return; }
+    const r = await api('POST', '/admin/users/' + u.id + '/plan', { plan: 'premium', days });
+    if (!r.ok) { setAlert('_uAlert', (r.data && r.data.error) || 'Could not update.'); return; }
+    closeModal();
+    showToast('Premium granted.', 'success');
+    delete USER_CACHE[u.id];
+    loadUsers();
+  });
+}
+
+async function actBlock(u, block){
+  if (!confirm((block ? 'Block' : 'Unblock') + ' ' + u.email + '?')) return;
+  const r = await api('POST', '/admin/users/' + u.id + '/block', { blocked: block });
+  if (!r.ok) { showToast('Could not update.', 'error'); return; }
+  closeModal();
+  showToast(block ? 'Account blocked.' : 'Account unblocked.', 'success');
+  delete USER_CACHE[u.id];
+  loadUsers();
+}
+
+async function actDelete(u){
+  if (!confirm('Delete ' + u.email + ' permanently? This removes all their links, payments, and notifications. Cannot be undone.')) return;
+  if (!confirm('Are you absolutely sure? This cannot be reversed.')) return;
+  const r = await api('DELETE', '/admin/users/' + u.id);
+  if (!r.ok) { showToast((r.data && r.data.error) || 'Could not delete.', 'error'); return; }
+  closeModal();
+  showToast('Account deleted.', 'success');
+  delete USER_CACHE[u.id];
+  loadUsers();
+}
+
+/* ═════════════════════════════════════════════════════════════════════
+   LINKS (search only — the backend exposes /admin/links?q=)
+   ═════════════════════════════════════════════════════════════════════ */
+async function searchLinks(){
+  const q = document.getElementById('linkSearch').value.trim().toLowerCase();
+  const wrap = document.getElementById('linksAdminList');
+  const pager = document.getElementById('linksPager');
+  if (!q) {
+    wrap.innerHTML = '<div class="empty" style="padding:40px 20px"><h3>Search to begin</h3><p>Enter a short code above.</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = '<div class="skel skel-row"></div><div class="skel skel-row"></div>';
+  const r = await api('GET', '/admin/links?q=' + encodeURIComponent(q) + '&page=1');
+  if (!r.ok) {
+    wrap.innerHTML = '<div class="empty" style="padding:32px"><p style="color:var(--red)">' + esc((r.data && r.data.error) || 'Could not search.') + '</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  const links = (r.data && r.data.links) || [];
+  if (!links.length) {
+    wrap.innerHTML = '<div class="empty"><h3>No links found</h3><p>No short link matches <strong>' + esc(q) + '</strong>.</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = '<div class="row-list">' + links.map(function(l){
+    return `<div class="row-item">
+      <div class="row-main">
+        <div class="row-title" style="font-family:var(--font-mono);color:var(--accent)">/${esc(l.code)}${l.is_alias ? ' <span class="badge premium" style="margin-left:6px">alias</span>' : ''}</div>
+        <div class="row-sub">${esc(l.url)}</div>
+        <div class="row-meta">
+          <span>user ${l.user_id}</span>
+          <span>${fmtNum(l.clicks)} clicks</span>
+          <span>created ${esc(timeAgo(l.created_at))}</span>
+          ${l.expires_at ? '<span>expires ' + esc(fmtDate(l.expires_at)) + '</span>' : '<span>permanent</span>'}
+        </div>
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-danger btn-xs" type="button" data-del-link="${esc(l.code)}">Delete</button>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+  wrap.querySelectorAll('[data-del-link]').forEach(function(b){
+    b.addEventListener('click', function(){
+      const code = b.getAttribute('data-del-link');
+      if (!confirm('Delete /' + code + '? This cannot be undone.')) return;
+      api('DELETE', '/admin/links/' + encodeURIComponent(code)).then(function(rr){
+        if (!rr.ok) { showToast('Could not delete.', 'error'); return; }
+        showToast('Link deleted.', 'success');
+        searchLinks();
+      });
+    });
+  });
+  pager.innerHTML = '';
+}
+document.getElementById('linkSearchBtn').addEventListener('click', searchLinks);
+document.getElementById('linkSearch').addEventListener('keydown', function(e){
+  if (e.key === 'Enter') { e.preventDefault(); searchLinks(); }
+});
+
+/* ═════════════════════════════════════════════════════════════════════
+   PAYMENTS
+   ═════════════════════════════════════════════════════════════════════ */
+let payFilter = 'pending';
+
+async function loadPayments(page){
+  page = page || 1;
+  const wrap = document.getElementById('paymentsList');
+  const pager = document.getElementById('paymentsPager');
+  wrap.innerHTML = '<div class="skel skel-row"></div><div class="skel skel-row"></div><div class="skel skel-row"></div>';
+  const r = await api('GET', '/admin/payments?status=' + encodeURIComponent(payFilter) + '&page=' + page);
+  if (!r.ok) {
+    wrap.innerHTML = '<div class="empty" style="padding:32px"><p style="color:var(--red)">' + esc((r.data && r.data.error) || 'Could not load payments.') + '</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  const list = (r.data && r.data.payments) || [];
+  if (!list.length) {
+    wrap.innerHTML = '<div class="empty"><h3>No ' + esc(payFilter) + ' payments</h3><p>Nothing to review here right now.</p></div>';
+    pager.innerHTML = '';
+    return;
+  }
+  wrap.innerHTML = '<div class="row-list">' + list.map(function(p){
+    const badge = p.status === 'approved' ? 'approved' : p.status === 'rejected' ? 'rejected' : 'pending';
+    const isPending = p.status === 'pending';
+    return `<div class="row-item">
+      <div class="row-main">
+        <div class="row-title">${esc(p.name || '—')} <span style="color:var(--gray);font-weight:400;font-size:13px;margin-left:6px">${esc(p.email || '')}</span></div>
+        <div class="row-meta" style="margin-top:10px">
+          <span>${esc(p.method)}</span>
+          <span style="color:var(--accent)">${esc(p.trx_id)}</span>
+          <span>from ${esc(p.sender)}</span>
+          <span>${esc(p.period)}</span>
+          <span>৳${fmtNum(p.amount)}</span>
+          <span>${esc(timeAgo(p.created_at))}</span>
+        </div>
+        ${p.note ? '<div style="font-size:12.5px;color:var(--gray2);margin-top:8px">Note: ' + esc(p.note) + '</div>' : ''}
+      </div>
+      <div class="row-actions">
+        <span class="badge ${badge}" style="align-self:center">${badge}</span>
+        ${isPending ? '<button class="btn btn-pri btn-xs" type="button" data-approve="' + p.id + '">Approve</button><button class="btn btn-danger btn-xs" type="button" data-reject="' + p.id + '">Reject</button>' : ''}
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+
+  wrap.querySelectorAll('[data-approve]').forEach(function(b){
+    b.addEventListener('click', function(){ confirmApprove(parseInt(b.getAttribute('data-approve'), 10)); });
+  });
+  wrap.querySelectorAll('[data-reject]').forEach(function(b){
+    b.addEventListener('click', function(){ openReject(parseInt(b.getAttribute('data-reject'), 10)); });
+  });
+
+  pager.innerHTML = `
+    <button class="btn btn-ghost btn-sm" ${page <= 1 ? 'disabled' : ''} data-page="${page - 1}">← Previous</button>
+    <span class="pager-info">Page ${page}</span>
+    <button class="btn btn-ghost btn-sm" ${!r.data.hasMore ? 'disabled' : ''} data-page="${page + 1}">Next →</button>
+  `;
+  pager.querySelectorAll('[data-page]').forEach(function(b){
+    b.addEventListener('click', function(){ loadPayments(parseInt(b.getAttribute('data-page'), 10)); });
+  });
+}
+
+function confirmApprove(id){
+  openModal('Approve this payment?',
+    `<p style="font-size:14.5px;line-height:1.6;color:var(--gray2)">
+      The user will be moved to Premium immediately. Make sure you've verified the transaction ID in your bKash/Nagad/Rocket app first.
+    </p>`,
+    '<button class="btn btn-ghost" type="button" id="appCancel">Cancel</button><button class="btn btn-pri" type="button" id="appGo">Approve</button>'
+  );
+  document.getElementById('appCancel').addEventListener('click', closeModal);
+  document.getElementById('appGo').addEventListener('click', async function(){
+    const b = this;
+    b.disabled = true;
+    b.innerHTML = '<span class="spin"></span>Approving…';
+    const r = await api('POST', '/admin/payments/' + id + '/approve', {});
+    if (!r.ok) {
+      b.disabled = false;
+      b.textContent = 'Approve';
+      showToast((r.data && r.data.error) || 'Could not approve.', 'error');
+      return;
+    }
+    closeModal();
+    showToast('Payment approved. User is now Premium.', 'success');
+    loadPayments(1);
+    // Refresh badge
+    const s = await api('GET', '/admin/stats');
+    if (s.ok && s.data) { pendingPayCount = s.data.pending_payments || 0; updatePendingBadge(); }
+  });
+}
+
+function openReject(id){
+  openModal('Reject payment',
+    `<div id="_uAlert"></div>
+     <p style="font-size:14px;color:var(--gray2);line-height:1.6;margin-bottom:16px">
+       The user will be notified. Optionally explain why — this note is shown to them.
+     </p>
+     <div class="field">
+       <label for="rejNote">Reason (optional)</label>
+       <textarea class="textarea" id="rejNote" rows="3" maxlength="200" placeholder="e.g. Transaction ID did not match our records."></textarea>
+     </div>`,
+    '<button class="btn btn-ghost" type="button" id="rejCancel">Cancel</button><button class="btn btn-danger" type="button" id="rejGo">Reject</button>'
+  );
+  document.getElementById('rejCancel').addEventListener('click', closeModal);
+  document.getElementById('rejGo').addEventListener('click', async function(){
+    const note = document.getElementById('rejNote').value.trim();
+    const b = this;
+    b.disabled = true;
+    b.innerHTML = '<span class="spin"></span>Rejecting…';
+    const r = await api('POST', '/admin/payments/' + id + '/reject', { note });
+    if (!r.ok) {
+      b.disabled = false;
+      b.textContent = 'Reject';
+      setAlert('_uAlert', (r.data && r.data.error) || 'Could not reject.');
+      return;
+    }
+    closeModal();
+    showToast('Payment rejected.', 'info');
+    loadPayments(1);
+  });
+}
+
+document.getElementById('refreshPay').addEventListener('click', function(){
+  loadPayments(1);
+  showToast('Refreshed.', 'info');
+});
+document.getElementById('payFilters').addEventListener('click', function(e){
+  const b = e.target.closest('.chip');
+  if (!b) return;
+  document.querySelectorAll('#payFilters .chip').forEach(c => c.classList.remove('on'));
+  b.classList.add('on');
+  payFilter = b.getAttribute('data-status');
+  loadPayments(1);
+});
+
+/* ═════════════════════════════════════════════════════════════════════
+   SETTINGS
+   ═════════════════════════════════════════════════════════════════════ */
+let settingsSnapshot = {};
+
+async function loadSettings(){
+  const r = await api('GET', '/admin/settings');
+  if (!r.ok) { showToast('Could not load settings.', 'error'); return; }
+  const s = (r.data && r.data.settings) || {};
+  settingsSnapshot = { ...s };
+
+  document.getElementById('stTelegram').value = s.telegram || '';
+  document.getElementById('stPayNote').value = s.pay_note || '';
+  document.getElementById('stSupport').value = s.support_email || '';
+  document.getElementById('stBlocked').value = s.blocked_domains || '';
+  document.getElementById('stAnn').value = s.announcement || '';
+
+  setToggle('stRegistration', 'stRegistrationLbl', s.registration_open === '1');
+  setToggle('stApproval', 'stApprovalLbl', s.require_approval === '1');
+  setToggle('stOneDevice', 'stOneDeviceLbl', s.one_device === '1');
+  setToggle('stReadOnly', 'stReadOnlyLbl', s.read_only === '1');
+}
+
+function setToggle(inputId, labelId, on){
+  const i = document.getElementById(inputId);
+  const l = document.getElementById(labelId);
+  if (i) i.checked = !!on;
+  if (l) l.textContent = on ? 'On' : 'Off';
+}
+
+['stRegistration','stApproval','stOneDevice','stReadOnly'].forEach(function(id){
+  const i = document.getElementById(id);
+  if (!i) return;
+  i.addEventListener('change', function(){
+    const lbl = document.getElementById(id + 'Lbl');
+    if (lbl) lbl.textContent = i.checked ? 'On' : 'Off';
+  });
+});
+
+document.getElementById('settingsForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const btn = document.getElementById('settingsSaveBtn');
+  btn.disabled = true;
+  const orig = btn.textContent;
+  btn.innerHTML = '<span class="spin"></span>Saving…';
+
+  const payload = {
+    telegram: document.getElementById('stTelegram').value.trim(),
+    pay_note: document.getElementById('stPayNote').value.trim(),
+    support_email: document.getElementById('stSupport').value.trim(),
+    blocked_domains: document.getElementById('stBlocked').value.trim(),
+    announcement: document.getElementById('stAnn').value.trim(),
+    registration_open: document.getElementById('stRegistration').checked ? '1' : '0',
+    require_approval: document.getElementById('stApproval').checked ? '1' : '0',
+    one_device: document.getElementById('stOneDevice').checked ? '1' : '0',
+    read_only: document.getElementById('stReadOnly').checked ? '1' : '0'
+  };
+
+  // The backend expects { settings: {...} }
+  const r = await api('PUT', '/admin/settings', { settings: payload });
+  btn.disabled = false;
+  btn.textContent = orig;
+  if (!r.ok) { showToast((r.data && r.data.error) || 'Could not save.', 'error'); return; }
+  settingsSnapshot = { ...payload };
+  showToast('Settings saved.', 'success');
+});
+
+document.getElementById('settingsResetBtn').addEventListener('click', function(){
+  const s = settingsSnapshot || {};
+  document.getElementById('stTelegram').value = s.telegram || '';
+  document.getElementById('stPayNote').value = s.pay_note || '';
+  document.getElementById('stSupport').value = s.support_email || '';
+  document.getElementById('stBlocked').value = s.blocked_domains || '';
+  document.getElementById('stAnn').value = s.announcement || '';
+  setToggle('stRegistration', 'stRegistrationLbl', s.registration_open === '1');
+  setToggle('stApproval', 'stApprovalLbl', s.require_approval === '1');
+  setToggle('stOneDevice', 'stOneDeviceLbl', s.one_device === '1');
+  setToggle('stReadOnly', 'stReadOnlyLbl', s.read_only === '1');
+  showToast('Reverted to last saved.', 'info');
+});
+
+/* ═════════════════════════════════════════════════════════════════════
+   ADMIN ACCOUNT
+   ═════════════════════════════════════════════════════════════════════ */
+function loadAdminAccount(){
+  const u = getUser() || {};
+  document.getElementById('adEmail').value = u.email || '';
+}
+
+document.getElementById('adminForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  setAlert('_adminAlert', '');
+  const email = document.getElementById('adEmail').value.trim();
+  const current = document.getElementById('adCurrent').value;
+  const pw = document.getElementById('adNew').value;
+  const confirm = document.getElementById('adConfirm').value;
+
+  if (!current) { setAlert('_adminAlert', 'Current password is required.'); return; }
+  if (pw) {
+    if (pw.length < 10 || pw.length > 72) { setAlert('_adminAlert', 'New password must be 10–72 characters.'); return; }
+    if (pw !== confirm) { setAlert('_adminAlert', 'New passwords do not match.'); return; }
+  }
+
+  const btn = document.getElementById('adminSaveBtn');
+  btn.disabled = true;
+  const orig = btn.textContent;
+  btn.innerHTML = '<span class="spin"></span>Saving…';
+
+  const body = { current, email };
+  if (pw) body.password = pw;
+  if (pw) body.confirm = confirm;
+
+  const r = await api('POST', '/admin/account', body);
+  btn.disabled = false;
+  btn.textContent = orig;
+
+  if (!r.ok) { setAlert('_adminAlert', (r.data && r.data.error) || 'Could not save.'); return; }
+
+  // Update cached user in localStorage (the server may have set a new token via X-New-Token)
+  if (r.data && r.data.user) {
+    try { localStorage.setItem(UK, JSON.stringify(r.data.user)); } catch {}
+    document.getElementById('menuEmail').textContent = r.data.user.email || '';
+  }
+
+  document.getElementById('adCurrent').value = '';
+  document.getElementById('adNew').value = '';
+  document.getElementById('adConfirm').value = '';
+  showToast('Admin account updated.', 'success');
+});
+
+/* ═════════════════════════════════════════════════════════════════════
+   BOOT
+   ═════════════════════════════════════════════════════════════════════ */
+function boot(){
+  const yr = document.getElementById('yr');
+  if (yr) yr.textContent = String(new Date().getFullYear());
+
+  const token = getToken();
+  const user = getUser();
+  if (!token || !user || user.role !== 'admin') {
+    clearAuth();
+    window.location.href = '/?admin=1';
+    return;
+  }
+
+  const initial = String(user.name || user.email || 'A').trim().charAt(0).toUpperCase();
+  document.getElementById('hdrAv').textContent = initial;
+  document.getElementById('menuName').textContent = user.name || 'Admin';
+  document.getElementById('menuEmail').textContent = user.email || '';
+  document.getElementById('sideBot').innerHTML = `
+    <div class="user-chip">
+      <span class="av">${esc(initial)}</span>
+      <span class="meta">
+        <strong>${esc(user.name || 'Admin')}</strong>
+        <span>${esc(user.email || '')}</span>
+      </span>
+    </div>
+  `;
+
+  const h = (location.hash || '').replace('#', '');
+  const start = VIEWS.indexOf(h) !== -1 ? h : 'dashboard';
+  showView(start);
+
+  // Light background refresh of the pending-payments badge
+  setInterval(async function(){
+    const r = await api('GET', '/admin/stats');
+    if (!r.ok || !r.data) return;
+    pendingPayCount = r.data.pending_payments || 0;
+    updatePendingBadge();
+  }, 60000);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', boot);
+} else {
+  boot();
+}
+
+})();
+</script>
+</body>
+</html>
