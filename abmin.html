@@ -625,8 +625,8 @@ body.has-side .ftr-b{margin-left:var(--side-w);max-width:none}
         <div id="linksAdminList">
           <div class="empty" style="padding:40px 20px">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
-            <h3>Search to begin</h3>
-            <p>Enter a short code above to see its details and manage it.</p>
+            <h3>Tap Search</h3>
+            <p>Tap Search with an empty box to see the latest links, or enter a code to find one.</p>
           </div>
         </div>
         <div class="pager" id="linksPager"></div>
@@ -1436,11 +1436,6 @@ async function searchLinks(){
   const q = document.getElementById('linkSearch').value.trim().toLowerCase();
   const wrap = document.getElementById('linksAdminList');
   const pager = document.getElementById('linksPager');
-  if (!q) {
-    wrap.innerHTML = '<div class="empty" style="padding:40px 20px"><h3>Search to begin</h3><p>Enter a short code above.</p></div>';
-    pager.innerHTML = '';
-    return;
-  }
   wrap.innerHTML = '<div class="skel skel-row"></div><div class="skel skel-row"></div>';
   const r = await api('GET', '/admin/links?q=' + encodeURIComponent(q) + '&page=1');
   if (!r.ok) {
