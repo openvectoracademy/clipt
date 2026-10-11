@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/dashboard", "/dashboard.html",
+    "/pricing", "/pricing.html",
+    "/abmin", "/abmin.html",
+    "/index.html", "/clipt.png", "/favicon.ico"
+  ]
+}
