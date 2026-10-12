@@ -1,10 +1,18 @@
 {
   "version": 1,
-  "include": ["/*"],
+  "include": [
+    "/*"
+  ],
   "exclude": [
-    "/dashboard", "/dashboard.html",
-    "/pricing", "/pricing.html",
-    "/abmin", "/abmin.html",
-    "/index.html", "/clipt.png", "/favicon.ico"
+    "/dashboard",
+    "/dashboard.html",
+    "/pricing",
+    "/pricing.html",
+    "/abmin",
+    "/abmin.html",
+    "/index.html",
+    "/clipt.png",
+    "/favicon.ico",
+    "/clipt-ui.css"
   ]
 }
