@@ -120,3 +120,15 @@ table{display:block;overflow-x:auto;max-width:100%}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
+
+/* Header on phones: keep the wordmark, shorten the sign-up label instead */
+.lbl-s{display:none}
+@media(max-width:430px){
+  .logo-word{display:inline;font-size:18px}
+  .logo img{height:28px}
+  .hdr-in{gap:4px;padding-inline:12px}
+  .hdr-r .btn{padding-inline:10px}
+  .hdr .lbl-l{display:none}
+  .hdr .lbl-s{display:inline}
+}
+@media(max-width:359px){.hdr .logo-word{display:none}}
