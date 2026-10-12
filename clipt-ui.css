@@ -1,0 +1,122 @@
+/* Clipt UI layer — loaded after each page's inline styles, so it wins the cascade.
+   Idea: a short link is a clipped coupon. Dashed "cut line" borders mark the
+   things you take away (the short link, the hero card, the closing CTA).
+   Everything else stays flat and quiet. */
+
+:root{
+  --bg:#f8f8f6;--alt:#efefeb;--surface:#fff;--surface2:#f1f1ed;--surface3:#e4e4de;
+  --border:rgba(20,24,27,.1);--border2:rgba(20,24,27,.22);
+  --accent:#3b3bf0;--accent2:#2f2fd8;--accent-dim:rgba(59,59,240,.09);
+  --white:#14181b;--gray:#5c646b;--gray2:#3a4147;
+  --red:#c4152b;--red-dim:rgba(196,21,43,.08);
+  --green:#1f7a45;--green-dim:rgba(31,122,69,.1);
+  --orange:#a85a00;--orange-dim:rgba(168,90,0,.1);
+  --hover:rgba(20,24,27,.06);--hdr-bg:rgba(248,248,246,.88);
+  --on-accent:#fff;--glow:transparent;
+  --radius:10px;--radius-lg:16px;--hdr-h:60px;
+  --font-head:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-body:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --lift:none;
+}
+:root[data-theme="dark"]{
+  --bg:#0d0f11;--alt:#121518;--surface:#171a1e;--surface2:#1f2328;--surface3:#292e34;
+  --border:rgba(255,255,255,.09);--border2:rgba(255,255,255,.2);
+  --accent:#8f8fff;--accent2:#a5a5ff;--accent-dim:rgba(143,143,255,.14);
+  --white:#f2f3f1;--gray:#99a1a8;--gray2:#c3c8cc;
+  --red:#ff6b7d;--red-dim:rgba(255,107,125,.13);
+  --green:#4cd387;--green-dim:rgba(76,211,135,.13);
+  --orange:#ffb24d;--orange-dim:rgba(255,178,77,.13);
+  --hover:rgba(255,255,255,.07);--hdr-bg:rgba(13,15,17,.86);
+  --on-accent:#0d0f11;
+}
+
+body{font-size:16px;line-height:1.6;font-feature-settings:"ss01";font-variant-numeric:tabular-nums}
+.btn-pri,.nav-i .cnt,.prof .ib .av,.user-chip .av{color:var(--on-accent)}
+.cta h2,.cta-in h2,.hero h1,.section-title{color:var(--white)}
+
+/* Type: one family, tight at display sizes */
+h1,h2,h3,h4{font-family:var(--font-head);letter-spacing:-.025em}
+.hero h1{
+  font-size:clamp(40px,6.6vw,78px);line-height:1.02;font-weight:700;letter-spacing:-.04em;
+  background:none;-webkit-text-fill-color:currentColor;color:var(--white);
+}
+.hero h1 em{font-style:normal;color:inherit}
+.section-title,.cta h2,.cta-in h2{font-size:clamp(28px,4.4vw,44px);line-height:1.08;font-weight:700;letter-spacing:-.03em}
+.hero-lede,.section-lede{color:var(--gray);font-size:clamp(17px,2vw,20px);line-height:1.5;max-width:56ch}
+code,.v,.logo-word{font-family:var(--font-mono)}
+.logo-word{font-family:var(--font-head);font-weight:700;letter-spacing:-.04em;font-size:21px}
+
+/* Labels: sentence case, readable size (no tracked all-caps) */
+.field label,.demo-box label,.side-sec{
+  font-family:var(--font-body);text-transform:none;letter-spacing:0;
+  font-size:13px;font-weight:600;color:var(--gray2);
+}
+.side-sec{font-size:12.5px;color:var(--gray)}
+.section-head .eyebrow{display:none}
+.hero .eyebrow{font-size:15px;font-weight:600;color:var(--accent);margin-bottom:14px}
+
+/* Buttons and inputs */
+.btn{border-radius:var(--radius);font-weight:600;letter-spacing:-.005em}
+.btn-pri{background:var(--accent);border-color:var(--accent);box-shadow:none}
+.btn-pri:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-ghost{color:var(--white);border:1px solid var(--border2);background:transparent}
+.btn-ghost:hover{border-color:var(--white);background:var(--hover)}
+.btn:active{transform:translateY(1px)}
+.input,.select,.textarea{font-size:16px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border2)}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* Header and nav */
+.hdr{background:var(--hdr-bg);border-bottom:1px solid var(--border)}
+.hnav a{border-radius:8px;font-weight:500}
+.hnav a.on{color:var(--white);background:var(--hover)}
+.nav-i{border-radius:8px}
+.nav-i.on{color:var(--white);background:var(--hover);box-shadow:inset 3px 0 0 var(--accent)}
+
+/* Hero: left-aligned, copy and demo on the left, the clipped card on the right */
+.hero{text-align:left;padding:48px 0 56px;border-bottom:1px solid var(--border)}
+.hero::before{display:none}
+.hero-lede{margin-inline:0}
+.hero-in{grid-template-columns:1fr;gap:40px;align-items:center}
+@media(min-width:960px){.hero{padding:88px 0 96px}.hero-in{grid-template-columns:1.15fr .85fr;gap:72px}}
+.hero h1{background:none}
+.demo-box{max-width:none;margin:28px 0 0;border-radius:var(--radius-lg);border:1px solid var(--border2);box-shadow:none;padding:16px;background:var(--surface)}
+.demo-box .input{background:var(--alt);border:1px solid transparent}
+.demo-result{border-radius:var(--radius);background:var(--accent-dim);border:1.5px dashed var(--accent)}
+.demo-result.err{background:var(--red-dim);border-color:var(--red)}
+.hero-meta{justify-content:flex-start;color:var(--gray)}
+.hero-visual>div>div{
+  box-shadow:none!important;border:1.5px dashed var(--border2)!important;
+  border-radius:var(--radius-lg)!important;background:var(--surface)!important;
+}
+.hero-in>div:first-child{animation:heroIn .5s cubic-bezier(.2,.7,.2,1) both}
+
+/* Sections: left-aligned, flat cards, no hover lift */
+.section-head{text-align:left;margin-inline:0;max-width:680px;margin-bottom:40px}
+.section-lede{margin-inline:0}
+main>section:nth-of-type(even){background:var(--alt)}
+.feat,.step{box-shadow:none;border-radius:var(--radius-lg);border:1px solid var(--border);background:var(--surface)}
+.feat:hover,.step:hover{transform:none;border-color:var(--border2)}
+.feat-ic{border-radius:var(--radius);background:var(--accent-dim);color:var(--accent)}
+.step-n{border-radius:6px;font-size:12.5px}
+.cta{border-radius:20px;border:1.5px dashed var(--border2);background:var(--surface);box-shadow:none}
+.cta::before{display:none}
+
+/* Overlays */
+.modal{border-radius:var(--radius-lg);box-shadow:0 20px 60px rgba(0,0,0,.28)}
+.menu{border-radius:12px}
+.toast{border-radius:12px}
+
+/* Phones: comfortable tap targets, no horizontal scroll */
+@media(max-width:520px){
+  .hero h1{font-size:clamp(36px,11vw,46px)}
+  .demo-row .btn{width:100%}
+  .section{padding:56px 0}
+}
+img,svg,video{max-width:100%}
+table{display:block;overflow-x:auto;max-width:100%}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
