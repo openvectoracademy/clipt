@@ -154,3 +154,26 @@ img,svg,video{max-width:100%}
 .input,input,select,textarea{font-size:max(16px,1em)}
 @media(max-width:360px){.hdr-in{padding-inline:8px}.btn{padding-inline:12px}}
 @media(min-width:1600px){html{font-size:106%}}
+
+/* ── Desktop: links live in the header on every page (no sidebar) ─────────── */
+@media(min-width:861px){
+  #menuBtn{display:none}
+  .hnav{display:flex}
+  body.has-side .side{transform:translateX(-100%);visibility:hidden}
+  body.has-side .hdr{left:0}
+  body.has-side .hdr-in{max-width:1200px}
+  body.has-side .app-wrap{margin-left:auto;max-width:1200px;width:100%}
+  body.has-side .ftr{margin-left:0}
+  body.has-side .ftr-in,body.has-side .ftr-b{margin-left:auto;margin-right:auto}
+}
+#hdrNav{display:none}
+@media(min-width:861px){
+  #hdrNav{display:flex;align-items:center;gap:2px;margin-left:20px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  #hdrNav::-webkit-scrollbar{display:none}
+}
+#hdrNav a,#hdrNav button{display:inline-flex;align-items:center;gap:6px;flex:none;white-space:nowrap;min-height:40px;padding:0 13px;border-radius:99px;font:500 14px var(--font-body);color:var(--gray2);-webkit-tap-highlight-color:transparent;transition:background .15s,color .15s}
+#hdrNav a:hover,#hdrNav button:hover{background:var(--hover);color:var(--white)}
+#hdrNav .on{background:var(--accent-dim);color:var(--accent)}
+#hdrNav .cnt{min-width:18px;padding:0 6px;border-radius:99px;background:var(--accent);color:var(--on-accent);font:600 11px var(--font-mono);line-height:18px;text-align:center}
+#hdrNav .cnt[hidden]{display:none}
+#hdrNav a:focus-visible,#hdrNav button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}

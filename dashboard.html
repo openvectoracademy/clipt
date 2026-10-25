@@ -1787,5 +1787,31 @@ document.getElementById('themeBtn').addEventListener('click',function(){
   document.addEventListener('keydown',function(e){if(e.key==='Escape'&&side.classList.contains('open'))scrim.click()});
 })();
 </script>
+<script>
+/* Desktop header links (mirrors the menu items) */
+(function(){
+  var nav=document.querySelector('#side .side-nav'),inner=document.querySelector('.hdr-in');
+  if(!nav||!inner||!document.body.classList.contains('has-side')||document.getElementById('hdrNav'))return;
+  var h=document.createElement('nav');h.id='hdrNav';h.setAttribute('aria-label','Main');
+  nav.querySelectorAll('.nav-i').forEach(function(src){
+    var link=src.tagName==='A',el=document.createElement(link?'a':'button');
+    if(link){el.href=src.getAttribute('href');['target','rel'].forEach(function(a){if(src.getAttribute(a))el.setAttribute(a,src.getAttribute(a))})}
+    else{el.type='button';el.setAttribute('data-hv',src.getAttribute('data-view'));el.addEventListener('click',function(){src.click()})}
+    var t=document.createElement('span');
+    t.textContent=Array.prototype.filter.call(src.childNodes,function(n){return n.nodeType===3}).map(function(n){return n.textContent}).join(' ').trim();
+    el.appendChild(t);
+    var c=src.querySelector('.cnt');
+    if(c){var cc=document.createElement('span');cc.className='cnt';el.appendChild(cc);
+      var s=function(){cc.textContent=c.textContent;cc.hidden=c.hidden};s();
+      new MutationObserver(s).observe(c,{attributes:true,childList:true,characterData:true,subtree:true})}
+    h.appendChild(el);
+  });
+  var logo=inner.querySelector('.logo');logo.parentNode.insertBefore(h,logo.nextSibling);
+  var on=function(){nav.querySelectorAll('.nav-i[data-view]').forEach(function(s){
+    var b=h.querySelector('[data-hv="'+s.getAttribute('data-view')+'"]');
+    if(b){b.classList.toggle('on',s.classList.contains('on'));if(s.classList.contains('on'))b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')}})};
+  on();new MutationObserver(on).observe(nav,{attributes:true,attributeFilter:['class'],subtree:true});
+})();
+</script>
 </body>
 </html>
