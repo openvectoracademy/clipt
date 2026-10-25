@@ -953,7 +953,7 @@ main>section:nth-of-type(even){background:var(--alt)}
         <div class="feat">
           <div class="feat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.2 8 8 9 4.8-1 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
           <h3>Destinations you control</h3>
-          <p>Blocked domains, reserved words, and one-account-per-device by default. Bot traffic doesn't inflate your click counts.</p>
+          <p>Blocked domains, reserved words, and two accounts per device by default. Bot traffic doesn't inflate your click counts.</p>
         </div>
         <div class="feat">
           <div class="feat-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
@@ -1020,7 +1020,7 @@ main>section:nth-of-type(even){background:var(--alt)}
         <li class="step">
           <span class="step-n">Step 01</span>
           <h3>Create an account</h3>
-          <p>Name, email, password. One account per device — you're ready in about twenty seconds.</p>
+          <p>Name, email, password. Up to two accounts per device — you're ready in about twenty seconds.</p>
         </li>
         <li class="step">
           <span class="step-n">Step 02</span>
@@ -1563,7 +1563,7 @@ async function openSignupModal(){
         </div>
       </form>
       <p class="field-hint" style="margin-top:14px">
-        By creating an account, you agree to the terms of use. One account per device.
+        By creating an account, you agree to the terms of use. Up to two accounts per device.
       </p>
     `,
     `<button class="btn btn-ghost" type="button" id="signupCancel">Cancel</button>
@@ -1593,7 +1593,7 @@ async function openSignupModal(){
       btn.textContent = 'Create account';
       // Specific guidance for common cases
       if (data && /device/i.test(data.error || '')) {
-        showAlert('This device already has an account. Sign in instead, or ask an admin for help.');
+        showAlert('This device already has 2 accounts. Sign in to one of them, or ask an admin for help.');
       } else if (data && /email/i.test(data.error || '')) {
         showAlert('That email is already registered. Try signing in.');
       } else {

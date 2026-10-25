@@ -177,3 +177,12 @@ img,svg,video{max-width:100%}
 #hdrNav .cnt{min-width:18px;padding:0 6px;border-radius:99px;background:var(--accent);color:var(--on-accent);font:600 11px var(--font-mono);line-height:18px;text-align:center}
 #hdrNav .cnt[hidden]{display:none}
 #hdrNav a:focus-visible,#hdrNav button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* ── Dashboard: link tools + QR modal ─────────────────────────────────────── */
+.lk-tools{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px}
+.lk-tools[hidden]{display:none}
+.lk-tools .input{min-height:44px}
+@media(min-width:720px){.lk-tools{grid-template-columns:1fr 150px 150px auto;align-items:center}}
+.qr-box{width:min(100%,280px);margin:4px auto 0;padding:10px;background:#fff;border-radius:14px;border:1px solid var(--border2)}
+.qr-box svg{display:block;width:100%;height:auto}
+.qr-url{margin-top:14px;text-align:center;font-family:var(--font-mono);font-size:13px;color:var(--gray2);word-break:break-all}
