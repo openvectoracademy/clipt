@@ -1751,5 +1751,41 @@ document.getElementById('themeBtn').addEventListener('click',function(){
   var m=document.querySelector('meta[name=theme-color]');if(m)m.content=n==='dark'?'#000000':'#fbfbfd';
 });
 </script>
+<script>
+/* Menu: X close button + theme switch inside the slide-in menu */
+(function(){
+  var side=document.getElementById('side'),scrim=document.getElementById('scrim');
+  if(!side||!scrim)return;
+  var top=side.querySelector('.side-top');
+  if(top&&!document.getElementById('sideX')){
+    var x=document.createElement('button');
+    x.type='button';x.id='sideX';x.className='side-x';x.setAttribute('aria-label','Close menu');
+    x.innerHTML='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    x.addEventListener('click',function(){scrim.click()});
+    top.appendChild(x);
+  }
+  var bot=document.getElementById('sideBot');
+  if(bot&&!document.getElementById('sideTheme')){
+    var r=document.createElement('div');
+    r.id='sideTheme';r.className='side-theme';
+    r.innerHTML='<span>Appearance</span><div class="seg" role="group" aria-label="Theme"><button type="button" data-t="light">Light</button><button type="button" data-t="dark">Dark</button></div>';
+    bot.parentNode.insertBefore(r,bot);
+    r.addEventListener('click',function(e){
+      var b=e.target.closest('button[data-t]');if(!b)return;
+      var n=b.getAttribute('data-t');
+      document.documentElement.setAttribute('data-theme',n);
+      try{localStorage.setItem('clipt_theme',n)}catch(err){}
+      var m=document.querySelector('meta[name=theme-color]');if(m)m.content=n==='dark'?'#000000':'#fbfbfd';
+    });
+    var sync=function(){
+      var d=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';
+      r.querySelectorAll('button[data-t]').forEach(function(b){b.setAttribute('aria-pressed',String(b.getAttribute('data-t')===d))});
+    };
+    sync();
+    new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  }
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&side.classList.contains('open'))scrim.click()});
+})();
+</script>
 </body>
 </html>
