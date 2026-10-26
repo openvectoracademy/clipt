@@ -416,6 +416,13 @@ async function loadPoll(db, id) {
   return v;
 }
 
+/* Counts stay hidden until the viewer has voted (or the poll is closed). Stripped copy never contains votes. */
+const pollOver = v => !!(v.closed || (v.ends_at && v.ends_at <= Date.now()));
+function hidePoll(v) {
+  if (pollOver(v)) return v;
+  return { ...v, hidden: true, voters: 0, options: v.options.map(o => ({ id: o.id, text: o.text })) };
+}
+
 async function deletePoll(db, id, uid) {
   const w = uid ? 'id=?1 AND user_id=?2' : 'id=?1';
   const a = uid ? [id, uid] : [id];
@@ -524,16 +531,26 @@ async function votePoll(db, x, id, body) {
 }
 
 async function handlePublic(method, path, body, db, x) {
-  const m = path.match(/^\/public\/polls\/([a-z0-9]{5})(\/vote)?$/);
+  const m = path.match(/^\/public\/polls\/([a-z0-9]{5})(\/vote|\/results)?$/);
   if (!m) return err('Not found', 404);
   const g = await rl('pub:' + x.ip, 240, 60);
   if (!g.ok) return tooMany(g.retry);
   if (method === 'GET' && !m[2]) {
     const v = await loadPoll(db, m[1]);
     if (v.gone) return err(v.removed ? 'This poll has been removed.' : 'Poll not found.', 404);
+    return json({ poll: hidePoll(v) });
+  }
+  if (method === 'POST' && m[2] === '/results') {          // results only for someone who has voted
+    const v = await loadPoll(db, m[1]);
+    if (v.gone) return err(v.removed ? 'This poll has been removed.' : 'Poll not found.', 404);
+    if (!pollOver(v)) {
+      const voter = String(body.voter || '');
+      if (!VOTER_RE.test(voter) || !(await db.prepare('SELECT 1 AS y FROM poll_voters WHERE poll_id=? AND voter=?').bind(m[1], voter).first()))
+        return err('Vote to see the results.', 403);
+    }
     return json({ poll: v });
   }
-  if (method === 'POST' && m[2]) return votePoll(db, x, m[1], body);
+  if (method === 'POST' && m[2] === '/vote') return votePoll(db, x, m[1], body);
   return err('Not found', 404);
 }
 
@@ -674,6 +691,11 @@ async function handleUser(method, path, body, db, user, x) {
 
   if (method === 'GET' && path === '/user/polls') return listPolls(db, x, user);
   if (method === 'POST' && path === '/user/polls') return createPoll(db, x, user, body);
+  if (method === 'GET' && (m = path.match(/^\/user\/polls\/([a-z0-9]{5})\/results$/))) {
+    if (!(await db.prepare('SELECT 1 AS y FROM polls WHERE id=? AND user_id=?').bind(m[1], user.id).first())) return err('Poll not found.', 404);
+    const v = await loadPoll(db, m[1]);
+    return v.gone ? err('Poll not found.', 404) : json({ poll: v });
+  }
   if ((m = path.match(/^\/user\/polls\/([a-z0-9]{5})(\/close)?$/))) {
     if (method === 'DELETE' && !m[2]) return (await deletePoll(db, m[1], user.id)) ? json({ ok: true }) : err('Poll not found.', 404);
     if (method === 'POST' && m[2]) {
