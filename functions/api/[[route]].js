@@ -6,7 +6,7 @@
 
 const G = globalThis;
 const enc = new TextEncoder();
-const SCHEMA_V = '1';
+const SCHEMA_V = '2';
 const DAY = 864e5;
 const PAGE = 25;
 
@@ -19,15 +19,15 @@ const CORS = {
 };
 
 const LIM = {
-  free:    { links: 15,  daily: 5,   alias: 1,  create: 2,  api: 60  },
-  premium: { links: 500, daily: 100, alias: 50, create: 10, api: 120 }
+  free:    { links: 15,  daily: 5,   alias: 1,  create: 2,  api: 60,  polls: 5  },
+  premium: { links: 500, daily: 100, alias: 50, create: 10, api: 120, polls: 50 }
 };
 const FREE_EXPIRY_DAYS = 90;
 const PLANS = {
   monthly: { usd: 2.99, bdt: 299,  days: 30  },
   yearly:  { usd: 29,   bdt: 2990, days: 365 }
 };
-const RESERVED = new Set(['admin', 'abmin', 'api', 'login', 'logout', 'signup', 'signin', 'register', 'dashboard', 'pricing', 'legal', 'terms', 'privacy', 'account', 'settings', 'billing', 'support', 'help', 'about', 'contact', 'static', 'assets', 'images', 'index', 'favicon', 'robots', 'sitemap', 'www', 'app', 'clipt', 'null', 'undefined', 'status', 'health']);
+const RESERVED = new Set(['admin', 'abmin', 'api', 'login', 'logout', 'signup', 'signin', 'register', 'dashboard', 'pricing', 'legal', 'terms', 'privacy', 'account', 'settings', 'billing', 'support', 'help', 'about', 'contact', 'static', 'assets', 'images', 'index', 'favicon', 'robots', 'sitemap', 'www', 'app', 'clipt', 'null', 'undefined', 'status', 'health', 'p', 'poll', 'polls']);
 const DEFAULTS = {
   registration_open: '1', require_approval: '0', one_device: '1', read_only: '0',
   announcement: '', support_email: '', bkash: '', nagad: '', rocket: '', pay_note: '', blocked_domains: ''
@@ -165,10 +165,23 @@ const TABLES = [
   `CREATE TABLE IF NOT EXISTS notifications (
     id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, title TEXT NOT NULL, body TEXT NOT NULL DEFAULT '',
     is_read INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, FOREIGN KEY (user_id) REFERENCES users(id))`,
+  `CREATE TABLE IF NOT EXISTS polls (
+    id TEXT PRIMARY KEY, user_id INTEGER NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL DEFAULT '',
+    multiple INTEGER NOT NULL DEFAULT 0, color TEXT NOT NULL DEFAULT '#3b3bf0', ends_at INTEGER,
+    closed INTEGER NOT NULL DEFAULT 0, blocked INTEGER NOT NULL DEFAULT 0, voters INTEGER NOT NULL DEFAULT 0,
+    created_at INTEGER NOT NULL, FOREIGN KEY (user_id) REFERENCES users(id)) WITHOUT ROWID`,
+  `CREATE TABLE IF NOT EXISTS poll_options (
+    poll_id TEXT NOT NULL, idx INTEGER NOT NULL, text TEXT NOT NULL, votes INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (poll_id, idx)) WITHOUT ROWID`,
+  `CREATE TABLE IF NOT EXISTS poll_voters (
+    poll_id TEXT NOT NULL, voter TEXT NOT NULL, ip TEXT NOT NULL, created_at INTEGER NOT NULL,
+    PRIMARY KEY (poll_id, voter)) WITHOUT ROWID`,
   `CREATE TABLE IF NOT EXISTS settings (k TEXT PRIMARY KEY, v TEXT NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS counters (k TEXT PRIMARY KEY, v INTEGER NOT NULL DEFAULT 0)`,
   `CREATE TABLE IF NOT EXISTS login_fails (ip TEXT PRIMARY KEY, n INTEGER NOT NULL, reset_at INTEGER NOT NULL)`,
   'CREATE INDEX IF NOT EXISTS idx_links_user ON links(user_id, created_at)',
+  'CREATE INDEX IF NOT EXISTS idx_polls_user ON polls(user_id, created_at)',
+  'CREATE INDEX IF NOT EXISTS idx_pvoters_ip ON poll_voters(poll_id, ip)',
   'CREATE INDEX IF NOT EXISTS idx_users_device ON users(device_id)',
   'CREATE INDEX IF NOT EXISTS idx_users_role ON users(role)',
   'CREATE INDEX IF NOT EXISTS idx_pay_status ON payments(status, created_at)',
@@ -365,6 +378,165 @@ async function createLink(db, x, user, body) {
   return err('Could not generate a unique code. Please try again.', 503);
 }
 
+/* ---------- POLLS ---------- */
+const POLL_ID_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789';
+const POLL_COLORS = ['#3b3bf0', '#0f9d6e', '#e11d48', '#b45309', '#0284c7', '#7c3aed', '#334155'];
+const POLL_ID_RE = /^[a-z0-9]{5}$/;
+const VOTER_RE = /^[A-Za-z0-9-]{16,64}$/;
+const MAX_POLL_OPTIONS = 10;
+const VOTES_PER_IP = 20;                              // per poll: shared networks (mobile CGNAT, offices) must still be able to vote
+function newPollId() {
+  let s = '';
+  for (const b of crypto.getRandomValues(new Uint8Array(5))) s += POLL_ID_CHARS[b % 36];
+  return s;
+}
+async function purgePoll(id) { try { await caches.default.delete(new Request('https://pp.clipt.internal/' + id)); } catch {} }
+
+/* Public poll payload. Cached 5 s per data center, so a viral poll costs ~1 D1 batch per 5 s, not one per viewer. */
+async function loadPoll(db, id) {
+  const key = new Request('https://pp.clipt.internal/' + id);
+  try { const c = await caches.default.match(key); if (c) return await c.json(); } catch {}
+  const [pr, orr, sr] = await db.batch([
+    db.prepare(`SELECT p.title,p.description,p.multiple,p.color,p.ends_at,p.closed,p.blocked,p.voters,p.created_at,u.is_blocked AS ub
+      FROM polls p JOIN users u ON u.id=p.user_id WHERE p.id=?`).bind(id),
+    db.prepare('SELECT idx,text,votes FROM poll_options WHERE poll_id=? ORDER BY idx').bind(id),
+    db.prepare("SELECT v FROM settings WHERE k='support_email'")
+  ]);
+  const p = pr.results[0];
+  let v, ttl = 5;
+  if (!p) { v = { gone: 1 }; ttl = 30; }
+  else if (p.blocked || p.ub) { v = { gone: 1, removed: 1 }; ttl = 30; }
+  else v = {
+    id, title: p.title, description: p.description, multiple: !!p.multiple, color: p.color, ends_at: p.ends_at,
+    closed: !!p.closed, voters: p.voters, created_at: p.created_at,
+    options: orr.results.map(o => ({ id: o.idx, text: o.text, votes: o.votes })),
+    support: (sr.results[0] && sr.results[0].v) || ''
+  };
+  try { await caches.default.put(key, new Response(JSON.stringify(v), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=' + ttl } })); } catch {}
+  return v;
+}
+
+async function deletePoll(db, id, uid) {
+  const w = uid ? 'id=?1 AND user_id=?2' : 'id=?1';
+  const a = uid ? [id, uid] : [id];
+  const res = await db.batch([
+    db.prepare(`DELETE FROM poll_options WHERE poll_id=?1 AND EXISTS (SELECT 1 FROM polls WHERE ${w})`).bind(...a),
+    db.prepare(`DELETE FROM poll_voters WHERE poll_id=?1 AND EXISTS (SELECT 1 FROM polls WHERE ${w})`).bind(...a),
+    db.prepare(`DELETE FROM polls WHERE ${w}`).bind(...a)
+  ]);
+  await purgePoll(id);
+  return (res[2].meta.changes || 0) > 0;
+}
+
+async function createPoll(db, x, user, body) {
+  const now = Date.now();
+  const st = await getSettings(db);
+  if (st.read_only === '1') return err('Poll creation is paused for maintenance. Please try again soon.', 503);
+  const r = await rl('pollc:' + user.id, 6, 60);
+  if (!r.ok) return tooMany(r.retry, 'You are creating polls too quickly. Wait a moment and try again.');
+
+  const title = clean(body.title, 200);
+  if (title.length < 3) return err('Write your question (at least 3 characters).');
+  const desc = clean(body.description, 500);
+  const seen = new Set(), opts = [];
+  for (const o of (Array.isArray(body.options) ? body.options : [])) {
+    const t = clean(o, 100);
+    if (!t || seen.has(t.toLowerCase())) continue;
+    seen.add(t.toLowerCase()); opts.push(t);
+  }
+  if (opts.length < 2) return err('Add at least 2 different options.');
+  if (opts.length > MAX_POLL_OPTIONS) return err('A poll can have at most ' + MAX_POLL_OPTIONS + ' options.');
+  const color = POLL_COLORS.includes(body.color) ? body.color : POLL_COLORS[0];
+  const ex = parseExpiry(body.ends_at, now);
+  if (ex.error) return err(ex.error.replace('expiry', 'end'));
+  const multiple = body.multiple ? 1 : 0;
+
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const id = newPollId();
+    try {
+      const res = await db.batch([
+        db.prepare(`INSERT INTO polls(id,user_id,title,description,multiple,color,ends_at,created_at)
+          SELECT ?1,?2,?3,?4,?5,?6,?7,?8 FROM users u WHERE u.id=?2 AND u.is_blocked=0
+          AND (SELECT COUNT(*) FROM polls WHERE user_id=?2) < (CASE WHEN u.plan='premium' AND u.plan_until>?8 THEN ${LIM.premium.polls} ELSE ${LIM.free.polls} END)`)
+          .bind(id, user.id, title, desc, multiple, color, ex.val, now),
+        ...opts.map((t, i) => db.prepare('INSERT INTO poll_options(poll_id,idx,text,votes) SELECT ?1,?2,?3,0 WHERE EXISTS (SELECT 1 FROM polls WHERE id=?1)').bind(id, i, t))
+      ]);
+      if (res[0].meta.changes === 1) return json({ ok: true, id, url: x.origin + '/p/' + id }, 201);
+      const u = await db.prepare('SELECT plan,plan_until,is_blocked,(SELECT COUNT(*) FROM polls WHERE user_id=?1) AS n FROM users WHERE id=?1').bind(user.id).first();
+      if (!u) return err('Account not found.', 401);
+      if (u.is_blocked) return err('This account has been blocked.', 403);
+      const prem = isPrem(u), L = prem ? LIM.premium.polls : LIM.free.polls;
+      return json({
+        error: prem ? `You have reached the limit of ${L} polls. Delete an old poll to create a new one.`
+                    : `You have used all ${L} polls on the Free plan. Delete one or upgrade to Premium for ${LIM.premium.polls}.`,
+        upgrade: !prem, limit: L
+      }, 403);
+    } catch (e) {
+      if (/UNIQUE|PRIMARY/i.test(String(e && e.message))) continue;
+      throw e;
+    }
+  }
+  return err('Could not generate a poll link. Please try again.', 503);
+}
+
+async function listPolls(db, x, user) {
+  const u = await db.prepare('SELECT plan,plan_until,is_blocked FROM users WHERE id=?').bind(user.id).first();
+  if (!u) return err('Account not found.', 401);
+  if (u.is_blocked) return err('This account has been blocked.', 403);
+  const prem = isPrem(u);
+  const rows = (await db.prepare('SELECT id,title,multiple,color,ends_at,closed,blocked,voters,created_at FROM polls WHERE user_id=? ORDER BY created_at DESC LIMIT 100').bind(user.id).all()).results;
+  return json({
+    polls: rows.map(r => ({ ...r, multiple: !!r.multiple, closed: !!r.closed, blocked: !!r.blocked })),
+    used: rows.length, limit: prem ? LIM.premium.polls : LIM.free.polls, plan: prem ? 'premium' : 'free', origin: x.origin
+  });
+}
+
+async function votePoll(db, x, id, body) {
+  const r = await rl('vote:' + x.ip, 60, 60);
+  if (!r.ok) return tooMany(r.retry, 'Too many votes from your network. Try again in a minute.');
+  const voter = String(body.voter || '');
+  if (!VOTER_RE.test(voter)) return err('Could not verify your browser. Reload the page and try again.');
+  const pick = [...new Set((Array.isArray(body.options) ? body.options : []).map(Number))];
+  if (!pick.length || pick.some(n => !Number.isInteger(n) || n < 0 || n >= MAX_POLL_OPTIONS)) return err('Choose an option to vote.');
+  const now = Date.now();
+  const ip = (await sha256(x.ip + ':' + x.secret)).slice(0, 24);
+  const p = await db.prepare(`SELECT p.multiple,p.closed,p.blocked,p.ends_at,u.is_blocked AS ub,
+      (SELECT COUNT(*) FROM poll_options WHERE poll_id=p.id) AS n,
+      (SELECT COUNT(*) FROM poll_voters WHERE poll_id=p.id AND ip=?2) AS ipn
+    FROM polls p JOIN users u ON u.id=p.user_id WHERE p.id=?1`).bind(id, ip).first();
+  if (!p || p.blocked || p.ub) return err('Poll not found.', 404);
+  if (p.closed) return err('This poll is closed.', 403);
+  if (p.ends_at && p.ends_at <= now) return err('This poll has ended.', 410);
+  if (pick.some(n => n >= p.n)) return err('That option does not exist.');
+  if (!p.multiple && pick.length > 1) return err('Choose only one option.');
+  if (p.ipn >= VOTES_PER_IP) return err('Too many votes were cast from your network on this poll.', 429);
+
+  const st = [db.prepare('INSERT INTO poll_voters(poll_id,voter,ip,created_at) VALUES(?,?,?,?)').bind(id, voter, ip, now)];
+  for (const i of pick) st.push(db.prepare('UPDATE poll_options SET votes=votes+1 WHERE poll_id=?1 AND idx=?2').bind(id, i));
+  st.push(db.prepare('UPDATE polls SET voters=voters+1 WHERE id=?').bind(id));
+  try { await db.batch(st); }
+  catch (e) {
+    if (/UNIQUE|PRIMARY/i.test(String(e && e.message))) return json({ error: 'You have already voted in this poll.', voted: true }, 409);
+    throw e;
+  }
+  await purgePoll(id);
+  return json({ ok: true, poll: await loadPoll(db, id) });
+}
+
+async function handlePublic(method, path, body, db, x) {
+  const m = path.match(/^\/public\/polls\/([a-z0-9]{5})(\/vote)?$/);
+  if (!m) return err('Not found', 404);
+  const g = await rl('pub:' + x.ip, 240, 60);
+  if (!g.ok) return tooMany(g.retry);
+  if (method === 'GET' && !m[2]) {
+    const v = await loadPoll(db, m[1]);
+    if (v.gone) return err(v.removed ? 'This poll has been removed.' : 'Poll not found.', 404);
+    return json({ poll: v });
+  }
+  if (method === 'POST' && m[2]) return votePoll(db, x, m[1], body);
+  return err('Not found', 404);
+}
+
 /* ---------- AUTH  /api/auth/* ---------- */
 async function handleAuth(method, path, body, db, x) {
   const gate = await rl('auth:' + x.ip, 40, 60);
@@ -499,6 +671,17 @@ async function handleUser(method, path, body, db, user, x) {
   if (method === 'GET' && path === '/user/overview') return overview(db, user, x);
 
   if (method === 'POST' && path === '/user/links') return createLink(db, x, user, body);
+
+  if (method === 'GET' && path === '/user/polls') return listPolls(db, x, user);
+  if (method === 'POST' && path === '/user/polls') return createPoll(db, x, user, body);
+  if ((m = path.match(/^\/user\/polls\/([a-z0-9]{5})(\/close)?$/))) {
+    if (method === 'DELETE' && !m[2]) return (await deletePoll(db, m[1], user.id)) ? json({ ok: true }) : err('Poll not found.', 404);
+    if (method === 'POST' && m[2]) {
+      const res = await db.prepare('UPDATE polls SET closed=1 WHERE id=?1 AND user_id=?2').bind(m[1], user.id).run();
+      await purgePoll(m[1]);
+      return res.meta.changes ? json({ ok: true }) : err('Poll not found.', 404);
+    }
+  }
 
   if (method === 'DELETE' && (m = path.match(/^\/user\/links\/([a-z0-9_-]{2,32})$/))) {
     const ok = await deleteLink(db, m[1], user.id);
@@ -660,6 +843,9 @@ async function handleAdmin(method, path, body, db, user, x) {
     await db.batch([
       db.prepare('DELETE FROM link_stats WHERE code IN (SELECT code FROM links WHERE user_id=?1)').bind(id),
       db.prepare('DELETE FROM links WHERE user_id=?1').bind(id),
+      db.prepare('DELETE FROM poll_options WHERE poll_id IN (SELECT id FROM polls WHERE user_id=?1)').bind(id),
+      db.prepare('DELETE FROM poll_voters WHERE poll_id IN (SELECT id FROM polls WHERE user_id=?1)').bind(id),
+      db.prepare('DELETE FROM polls WHERE user_id=?1').bind(id),
       db.prepare('DELETE FROM notifications WHERE user_id=?1').bind(id),
       db.prepare('DELETE FROM payments WHERE user_id=?1').bind(id),
       db.prepare("DELETE FROM users WHERE id=?1 AND role='user'").bind(id)
@@ -680,6 +866,24 @@ async function handleAdmin(method, path, body, db, user, x) {
   }
   if (method === 'DELETE' && (m = path.match(/^\/admin\/links\/([a-z0-9_-]{2,32})$/))) {
     return (await deleteLink(db, m[1], 0)) ? json({ ok: true }) : err('Link not found.', 404);
+  }
+
+  if (method === 'GET' && path === '/admin/polls') {
+    const q = String(x.q.get('q') || '').toLowerCase().replace(/[^a-z0-9 @._-]/g, '').slice(0, 60), uid = parseInt(x.q.get('user')) || 0;
+    const cols = 'p.id,p.title,p.user_id,p.voters,p.closed,p.blocked,p.ends_at,p.created_at,u.email';
+    let r;
+    if (uid) r = await db.prepare(`SELECT ${cols} FROM polls p JOIN users u ON u.id=p.user_id WHERE p.user_id=? ORDER BY p.created_at DESC LIMIT ? OFFSET ?`).bind(uid, PAGE + 1, off).all();
+    else if (q) { const like = '%' + q + '%'; r = await db.prepare(`SELECT ${cols} FROM polls p JOIN users u ON u.id=p.user_id WHERE p.id=? OR p.title LIKE ? OR u.email LIKE ? ORDER BY p.created_at DESC LIMIT ? OFFSET ?`).bind(q, like, like, PAGE + 1, off).all(); }
+    else r = await db.prepare(`SELECT ${cols} FROM polls p JOIN users u ON u.id=p.user_id ORDER BY p.created_at DESC LIMIT ? OFFSET ?`).bind(PAGE + 1, off).all();
+    return json({ polls: r.results.slice(0, PAGE), hasMore: r.results.length > PAGE, page });
+  }
+  if (method === 'POST' && (m = path.match(/^\/admin\/polls\/([a-z0-9]{5})\/block$/))) {
+    const res = await db.prepare('UPDATE polls SET blocked=?2 WHERE id=?1').bind(m[1], body.blocked ? 1 : 0).run();
+    await purgePoll(m[1]);
+    return res.meta.changes ? json({ ok: true }) : err('Poll not found.', 404);
+  }
+  if (method === 'DELETE' && (m = path.match(/^\/admin\/polls\/([a-z0-9]{5})$/))) {
+    return (await deletePoll(db, m[1], 0)) ? json({ ok: true }) : err('Poll not found.', 404);
   }
 
   if (method === 'GET' && path === '/admin/payments') {
@@ -783,7 +987,9 @@ export async function onRequest(context) {
     };
 
     let res;
-    if (path.startsWith('/auth/')) {
+    if (path.startsWith('/public/')) {
+      res = await handlePublic(method, path, body, db, x);
+    } else if (path.startsWith('/auth/')) {
       res = await handleAuth(method, path, body, db, x);
     } else if (path.startsWith('/user/') || path.startsWith('/admin/')) {
       const user = await getUser(request, secret);
