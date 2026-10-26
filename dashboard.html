@@ -2095,7 +2095,7 @@ function renderPolls(){
 
 async function plResults(id){
   openModal('Poll results', '<div class="skel" style="height:140px"></div>', '');
-  const r = await api('GET', '/public/polls/' + encodeURIComponent(id));
+  const r = await api('GET', '/user/polls/' + encodeURIComponent(id) + '/results');
   const body = document.getElementById('gBody');
   if (!r.ok) { body.innerHTML = '<p style="color:var(--gray2)">' + esc((r.data && r.data.error) || 'Could not load results.') + '</p>'; return; }
   const p = r.data.poll, pc = plPercents(p), max = Math.max.apply(null, p.options.map(o => o.votes));
