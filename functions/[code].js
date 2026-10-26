@@ -6,7 +6,7 @@
    ========================================================================== */
 
 const G = globalThis;
-const RESERVED = new Set(['admin', 'abmin', 'api', 'login', 'logout', 'signup', 'signin', 'register', 'dashboard', 'pricing', 'legal', 'terms', 'privacy', 'account', 'settings', 'billing', 'support', 'help', 'about', 'contact', 'static', 'assets', 'images', 'index', 'favicon', 'robots', 'sitemap', 'www', 'app', 'clipt', 'null', 'undefined', 'status', 'health']);
+const RESERVED = new Set(['admin', 'abmin', 'api', 'login', 'logout', 'signup', 'signin', 'register', 'dashboard', 'pricing', 'legal', 'terms', 'privacy', 'account', 'settings', 'billing', 'support', 'help', 'about', 'contact', 'static', 'assets', 'images', 'index', 'favicon', 'robots', 'sitemap', 'www', 'app', 'clipt', 'null', 'undefined', 'status', 'health', 'p', 'poll', 'polls']);
 const CODE_RE = /^[a-z0-9][a-z0-9_-]{1,30}[a-z0-9]$/;
 const BOT_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|curl|wget|python|java|go-http|headless|monitor|uptime|scanner/i;
 const SEC = { 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store' };
