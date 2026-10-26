@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Clipt pricing — Free forever, or upgrade to Premium for 500 active links, custom aliases, permanent links, and detailed analytics.">
+<meta name="description" content="Clipt pricing — Free forever, or upgrade to Premium for 500 active links, 50 polls, custom aliases, permanent links, and detailed analytics.">
 <meta name="robots" content="index,follow">
 <title>Pricing — Clipt</title>
 <link rel="icon" type="image/png" href="/clipt.png">
@@ -990,8 +990,8 @@ let CFG = {
     yearly:  { usd: 29,   bdt: 2990, days: 365 }
   },
   limits: {
-    free:    { links: 15,  daily: 5,   alias: 1,  create: 2,  api: 60  },
-    premium: { links: 500, daily: 100, alias: 50, create: 10, api: 120 }
+    free:    { links: 15,  daily: 5,   alias: 1,  create: 2,  api: 60,  polls: 5  },
+    premium: { links: 500, daily: 100, alias: 50, create: 10, api: 120, polls: 50 }
   },
   free_expiry_days: 90,
   registration_open: true,
@@ -1050,6 +1050,7 @@ function renderPlans(){
           <div class="feat yes">${check}<span><strong>${free.links}</strong> active links</span></div>
           <div class="feat yes">${check}<span><strong>${free.daily}</strong> new links per day</span></div>
           <div class="feat yes">${check}<span><strong>${free.alias}</strong> custom alias</span></div>
+          <div class="feat yes">${check}<span><strong>${free.polls || 5}</strong> polls with shareable links</span></div>
           <div class="feat yes">${check}<span>Total click counts</span></div>
           <div class="feat yes">${check}<span>Links expire after <strong>${CFG.free_expiry_days} days</strong></span></div>
           <div class="feat no">${cross}<span>No daily breakdown</span></div>
@@ -1073,6 +1074,7 @@ function renderPlans(){
           <div class="feat yes">${check}<span><strong>${prem.links}</strong> active links</span></div>
           <div class="feat yes">${check}<span><strong>${prem.daily}</strong> new links per day</span></div>
           <div class="feat yes">${check}<span><strong>${prem.alias}</strong> custom aliases</span></div>
+          <div class="feat yes">${check}<span><strong>${prem.polls || 50}</strong> polls with shareable links</span></div>
           <div class="feat yes">${check}<span>Total click counts</span></div>
           <div class="feat yes">${check}<span>Permanent links, or pick your own expiry</span></div>
           <div class="feat yes">${check}<span>30-day daily click breakdown</span></div>
@@ -1093,6 +1095,7 @@ function renderCompare(){
     ['Active links', String(f.links), String(p.links)],
     ['New links per day', String(f.daily), String(p.daily)],
     ['Custom aliases', String(f.alias), String(p.alias)],
+    ['Polls (total)', String(f.polls || 5), String(p.polls || 50)],
     ['API requests per minute', String(f.api), String(p.api)],
     ['Link expiry', CFG.free_expiry_days + ' days', 'Permanent or your own date'],
     ['Total click counts', check, check],

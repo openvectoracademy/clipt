@@ -619,6 +619,45 @@ html,body{max-width:100%;overflow-x:hidden}
 #themeBtn .i-sun{display:none} :root[data-theme="dark"] #themeBtn .i-sun{display:block} :root[data-theme="dark"] #themeBtn .i-moon{display:none}
 @media(max-width:520px){.shell{padding-inline:16px}}
 </style>
+<style>
+/* Polls */
+.pl-opts{display:grid;gap:10px}
+.pl-opt{display:flex;gap:8px;align-items:center}
+.pl-opt .n{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);color:var(--gray2);font:600 12px var(--font-body)}
+.pl-opt .input{flex:1;min-width:0}
+.pl-opt .x{flex:none;width:40px;height:40px;border-radius:var(--radius);display:grid;place-items:center;color:var(--gray);border:1px solid var(--border)}
+.pl-opt .x:hover{color:var(--red);border-color:var(--red);background:var(--red-dim)}
+.pl-opt .x[disabled]{opacity:.35;pointer-events:none}
+.pl-addrow{display:flex;align-items:center;gap:12px;margin-top:10px}
+.pl-sw{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+.pl-sw label{position:relative;width:34px;height:34px;border-radius:50%;cursor:pointer;display:grid;place-items:center;margin:0;padding:0;text-transform:none;letter-spacing:0}
+.pl-sw input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.pl-sw span{width:100%;height:100%;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12);display:grid;place-items:center;color:#fff;transition:transform .12s}
+.pl-sw span svg{opacity:0}
+.pl-sw input:checked+span{box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--white)}
+.pl-sw input:checked+span svg{opacity:1}
+.pl-sw input:focus-visible+span{outline:2px solid var(--accent);outline-offset:4px}
+.pl-check{display:flex;gap:12px;align-items:flex-start;cursor:pointer;margin:0;text-transform:none;letter-spacing:0;font-size:14.5px;color:var(--white)}
+.pl-check input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+.pl-check strong{display:block;font-weight:600;font-size:14.5px}
+.pl-check em{display:block;font-style:normal;color:var(--gray);font-size:13px;font-weight:400}
+.pl-row .link-actions{flex-wrap:wrap}
+.pl-row .pl-title{font-weight:600;color:var(--white);font-size:16px;letter-spacing:-.01em;margin:2px 0 6px;overflow-wrap:anywhere}
+.pl-res{display:grid;gap:14px;margin-top:2px}
+.pl-res .r-top{display:flex;justify-content:space-between;gap:12px;font-size:14.5px;margin-bottom:6px}
+.pl-res .r-top b{font-weight:700}
+.pl-res .r-bar{height:10px;border-radius:99px;background:var(--surface3);overflow:hidden}
+.pl-res .r-bar i{display:block;height:100%;border-radius:99px;background:var(--pc,var(--accent))}
+.pl-res .r-n{font-size:12.5px;color:var(--gray);margin-top:4px}
+.pl-sum{font-size:14px;color:var(--gray);margin-bottom:16px}
+.link-meta .badge.live{background:var(--green-dim);color:var(--green)}
+.link-meta .badge.closed{background:var(--surface3);color:var(--gray2)}
+#_plAlert{display:none;padding:11px 14px;border-radius:var(--radius);font-size:13.5px;line-height:1.5;margin-bottom:16px}
+#_plAlert.show{display:block}
+#_plAlert.error{background:var(--red-dim);color:var(--red);border:1px solid rgba(240,86,106,.25)}
+.pl-limit{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;padding:12px 14px;border-radius:var(--radius);background:var(--accent-dim);color:var(--accent);font-size:14px;font-weight:500}
+.pl-limit a{color:inherit;font-weight:700;text-decoration:underline}
+</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
@@ -639,6 +678,10 @@ html,body{max-width:100%;overflow-x:hidden}
     <button class="nav-i" data-view="links">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
       My links
+    </button>
+    <button class="nav-i" data-view="polls">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+      Polls
     </button>
     <button class="nav-i" data-view="billing">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19"/><path d="M6.5 15h3"/></svg>
@@ -801,6 +844,103 @@ html,body{max-width:100%;overflow-x:hidden}
           <div class="skel skel-row"></div>
         </div>
         <div id="linksPager" style="display:flex;justify-content:center;gap:8px;margin-top:20px;flex-wrap:wrap"></div>
+      </div>
+    </div>
+
+    <!-- VIEW: POLLS -->
+    <div class="view" id="view-polls">
+      <header class="page-head">
+        <h1>Polls</h1>
+        <p>Ask a question, share a clean link, watch votes come in live.</p>
+      </header>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="k">Polls used</div>
+          <div class="v" id="plUsed">—</div>
+          <div class="m" id="plUsedLimit">of — total</div>
+        </div>
+        <div class="stat">
+          <div class="k">Live polls</div>
+          <div class="v" id="plLive">—</div>
+          <div class="m">accepting votes now</div>
+        </div>
+        <div class="stat accent">
+          <div class="k">Total votes</div>
+          <div class="v" id="plVotes">—</div>
+          <div class="m">across all polls</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <h2>Create a poll</h2>
+            <p class="sub" id="plPlanHint">Your poll gets a short, shareable link like <span style="font-family:var(--font-mono)">/p/x58op</span>.</p>
+          </div>
+        </div>
+        <form id="plForm" autocomplete="off" novalidate>
+          <div id="_plAlert"></div>
+          <div id="plLimitBox"></div>
+          <div class="field">
+            <label for="plTitle">Question</label>
+            <input class="input" id="plTitle" type="text" maxlength="200" placeholder="e.g. Where should we eat on Friday?">
+          </div>
+          <div class="field">
+            <label for="plDesc">Description <span style="color:var(--gray);text-transform:none;letter-spacing:0">(optional)</span></label>
+            <textarea class="input" id="plDesc" rows="2" maxlength="500" placeholder="Add context for voters"></textarea>
+          </div>
+          <div class="field">
+            <label>Options</label>
+            <div id="plOpts" class="pl-opts"></div>
+            <div class="pl-addrow">
+              <button class="btn btn-ghost btn-sm" type="button" id="plAdd">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Add option
+              </button>
+              <span class="field-hint" id="plOptCount" style="margin:0">2 of 10</span>
+            </div>
+          </div>
+          <div class="create-grid" style="grid-template-columns:1fr;gap:14px">
+            <div class="field" style="margin-bottom:0">
+              <label for="plEnds">Closes on <span style="color:var(--gray);text-transform:none;letter-spacing:0">(optional)</span></label>
+              <input class="input" id="plEnds" type="datetime-local">
+              <p class="field-hint">Leave blank to keep voting open until you close it.</p>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Colour</label>
+              <div class="pl-sw" id="plColors" role="radiogroup" aria-label="Poll colour"></div>
+            </div>
+            <label class="pl-check">
+              <input type="checkbox" id="plMulti">
+              <span><strong>Allow multiple answers</strong><em>Voters can pick more than one option.</em></span>
+            </label>
+          </div>
+          <div class="create-actions">
+            <button class="btn btn-pri" type="submit" id="plCreate">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create poll
+            </button>
+            <button class="btn btn-quiet" type="reset" id="plReset">Clear</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <div>
+            <h2>Your polls</h2>
+            <p class="sub" id="plCount">—</p>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="plRefresh" type="button">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 0 0-14.5-3.5L4 9M4 4v5h5M4 13a8 8 0 0 0 14.5 3.5L20 15M20 20v-5h-5"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div id="plList">
+          <div class="skel skel-row"></div>
+          <div class="skel skel-row"></div>
+        </div>
       </div>
     </div>
 
@@ -1108,7 +1248,7 @@ window.addEventListener('scroll', function(){
 }, { passive: true });
 
 /* ─── VIEW ROUTER ───────────────────────────────────────────────────── */
-const VIEWS = ['links', 'billing', 'account'];
+const VIEWS = ['links', 'polls', 'billing', 'account'];
 function showView(name){
   if (VIEWS.indexOf(name) === -1) name = 'links';
   document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
@@ -1119,6 +1259,7 @@ function showView(name){
   });
   try { history.replaceState(null, '', '#' + name); } catch {}
   if (window.scrollY > 100) window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'polls') loadPolls();
   if (name === 'billing') loadBilling();
   if (name === 'account') loadAccount();
 }
@@ -1778,8 +1919,8 @@ function qrSvg(url){
   var z = n + q * 2;
   return '<svg viewBox="0 0 ' + z + ' ' + z + '" role="img" aria-label="QR code" shape-rendering="crispEdges"><rect width="' + z + '" height="' + z + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
 }
-function showQR(code){
-  var url = STATE.origin + '/' + code;
+function showQR(code){ showQRFor(STATE.origin + '/' + code, code); }
+function showQRFor(url, code){
   openModal('QR code', '<div class="qr-box">' + qrSvg(url) + '</div><p class="qr-url">' + esc(url) + '</p>',
     '<button class="btn btn-ghost" type="button" id="qrCopy">Copy link</button><button class="btn btn-pri" type="button" id="qrDl">Download PNG</button>');
   document.getElementById('qrCopy').addEventListener('click', function(){
@@ -1819,6 +1960,221 @@ document.getElementById('refreshLinks').addEventListener('click', function(){
   loadOverview();
   showToast('Refreshed.', 'info');
 });
+
+/* ─── POLLS ─────────────────────────────────────────────────────────── */
+const PL_COLORS = ['#3b3bf0', '#0f9d6e', '#e11d48', '#b45309', '#0284c7', '#7c3aed', '#334155'];
+const PL_COLOR_NAMES = ['Indigo', 'Emerald', 'Rose', 'Amber', 'Sky', 'Violet', 'Slate'];
+const PL_MAX_OPTS = 10;
+const PL = { polls: [], used: 0, limit: 5, plan: 'free', origin: '', loaded: false };
+const plClosed = p => !!(p.closed || (p.ends_at && p.ends_at <= Date.now()));
+const plUrl = id => (PL.origin || location.origin) + '/p/' + id;
+
+function plPercents(p){
+  const tot = p.voters, o = p.options;
+  if (!tot) return o.map(() => 0);
+  if (p.multiple) return o.map(x => Math.min(100, Math.round(x.votes * 100 / tot)));
+  const base = o.map(x => Math.floor(x.votes * 100 / tot));
+  let rem = 100 - base.reduce((a, b) => a + b, 0);
+  o.map((x, i) => ({ i, r: x.votes * 100 / tot - base[i] })).sort((a, b) => b.r - a.r).forEach(x => { if (rem-- > 0) base[x.i]++; });
+  return base;
+}
+
+/* form: option rows + colour swatches */
+function plRows(){ return Array.prototype.slice.call(document.querySelectorAll('#plOpts .pl-opt')); }
+function plRenumber(){
+  const rows = plRows();
+  rows.forEach((r, i) => {
+    r.querySelector('.n').textContent = String(i + 1);
+    r.querySelector('input').placeholder = 'Option ' + (i + 1);
+    r.querySelector('.x').disabled = rows.length <= 2;
+  });
+  document.getElementById('plOptCount').textContent = rows.length + ' of ' + PL_MAX_OPTS;
+  document.getElementById('plAdd').disabled = rows.length >= PL_MAX_OPTS;
+}
+function plAddOption(val, focus){
+  if (plRows().length >= PL_MAX_OPTS) return;
+  const row = document.createElement('div');
+  row.className = 'pl-opt';
+  row.innerHTML = '<span class="n"></span><input class="input" type="text" maxlength="100" autocomplete="off">' +
+    '<button type="button" class="x" aria-label="Remove option"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>';
+  const inp = row.querySelector('input');
+  inp.value = val || '';
+  row.querySelector('.x').addEventListener('click', function(){ if (plRows().length > 2) { row.remove(); plRenumber(); } });
+  inp.addEventListener('keydown', function(e){
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const rows = plRows(), i = rows.indexOf(row);
+    if (i < rows.length - 1) rows[i + 1].querySelector('input').focus();
+    else if (inp.value.trim()) plAddOption('', true);
+  });
+  document.getElementById('plOpts').appendChild(row);
+  plRenumber();
+  if (focus) inp.focus();
+}
+function plResetForm(){
+  document.getElementById('plOpts').innerHTML = '';
+  plAddOption(''); plAddOption('');
+  const first = document.querySelector('#plColors input'); if (first) first.checked = true;
+}
+function plInitForm(){
+  const sw = document.getElementById('plColors');
+  sw.innerHTML = PL_COLORS.map((c, i) =>
+    '<label title="' + PL_COLOR_NAMES[i] + '"><input type="radio" name="plColor" value="' + c + '"' + (i === 0 ? ' checked' : '') + ' aria-label="' + PL_COLOR_NAMES[i] + '">' +
+    '<span style="background:' + c + '"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></label>').join('');
+  plResetForm();
+  document.getElementById('plAdd').addEventListener('click', function(){ plAddOption('', true); });
+  document.getElementById('plReset').addEventListener('click', function(){ setTimeout(plResetForm, 0); setAlert('_plAlert', ''); });
+}
+
+/* data + render */
+async function loadPolls(){
+  const r = await api('GET', '/user/polls');
+  if (r.status === 401) { clearAuth(); window.location.href = '/?signin=1'; return; }
+  if (!r.ok) { showToast((r.data && r.data.error) || 'Could not load polls.', 'error'); return; }
+  PL.polls = r.data.polls || []; PL.used = r.data.used; PL.limit = r.data.limit;
+  PL.plan = r.data.plan; PL.origin = r.data.origin || location.origin; PL.loaded = true;
+  renderPolls();
+}
+function renderPolls(){
+  const live = PL.polls.filter(p => !p.blocked && !plClosed(p)).length;
+  const votes = PL.polls.reduce((s, p) => s + (p.voters || 0), 0);
+  document.getElementById('plUsed').textContent = fmtNum(PL.used);
+  document.getElementById('plUsedLimit').textContent = 'of ' + fmtNum(PL.limit) + ' total';
+  document.getElementById('plLive').textContent = fmtNum(live);
+  document.getElementById('plVotes').textContent = fmtNum(votes);
+
+  const full = PL.used >= PL.limit, prem = PL.plan === 'premium';
+  const box = document.getElementById('plLimitBox');
+  box.innerHTML = full
+    ? '<div class="pl-limit"><span>' + (prem ? 'You have used all ' + PL.limit + ' polls. Delete an old poll to create a new one.'
+        : 'You have used all ' + PL.limit + ' polls on the Free plan.') + '</span>' + (prem ? '' : '<a href="/pricing.html">Upgrade to Premium for 50</a>') + '</div>'
+    : '';
+  document.getElementById('plPlanHint').textContent = prem
+    ? 'Premium: ' + PL.used + ' of ' + PL.limit + ' polls used. Each poll gets a short link like /p/x58op.'
+    : 'Free plan: ' + PL.used + ' of ' + PL.limit + ' polls used (Premium allows 50). Each poll gets a short link like /p/x58op.';
+  document.getElementById('plCreate').disabled = full;
+
+  const wrap = document.getElementById('plList');
+  document.getElementById('plCount').textContent = PL.polls.length ? PL.polls.length + ' poll' + (PL.polls.length === 1 ? '' : 's') : 'No polls yet';
+  if (!PL.polls.length) {
+    wrap.innerHTML = '<div class="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><h3>No polls yet</h3><p>Create your first poll above. You will get a link to share anywhere.</p></div>';
+    return;
+  }
+  wrap.innerHTML = PL.polls.map(function(p){
+    const closed = plClosed(p), url = plUrl(p.id);
+    const badge = p.blocked ? '<span class="badge expired">removed by admin</span>'
+      : closed ? '<span class="badge closed">closed</span>' : '<span class="badge live">live</span>';
+    return `
+      <div class="link-row pl-row ${closed || p.blocked ? 'expired' : ''}" data-id="${esc(p.id)}">
+        <div class="link-main">
+          <div class="link-short">
+            <span>${esc(url)}</span>
+            <button type="button" data-plcopy="${esc(url)}" aria-label="Copy poll link" title="Copy">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>
+            </button>
+          </div>
+          <div class="pl-title">${esc(p.title)}</div>
+          <div class="link-meta">
+            <span>${fmtNum(p.voters)} vote${p.voters === 1 ? '' : 's'}</span>
+            <span>${timeAgo(p.created_at)}</span>
+            ${badge}
+            ${p.multiple ? '<span class="badge premium">multiple answers</span>' : ''}
+            ${!closed && p.ends_at ? '<span>closes ' + esc(fmtDateTime(p.ends_at)) + '</span>' : ''}
+          </div>
+        </div>
+        <div class="link-actions">
+          <a class="btn btn-ghost btn-xs" href="${esc(url)}" target="_blank" rel="noopener">Open</a>
+          <button class="btn btn-ghost btn-xs" type="button" data-plres="${esc(p.id)}">Results</button>
+          <button class="btn btn-ghost btn-xs" type="button" data-plqr="${esc(p.id)}">QR</button>
+          ${closed || p.blocked ? '' : '<button class="btn btn-ghost btn-xs" type="button" data-plclose="' + esc(p.id) + '">Close</button>'}
+          <button class="btn btn-danger btn-xs" type="button" data-pldel="${esc(p.id)}">Delete</button>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function plResults(id){
+  openModal('Poll results', '<div class="skel" style="height:140px"></div>', '');
+  const r = await api('GET', '/public/polls/' + encodeURIComponent(id));
+  const body = document.getElementById('gBody');
+  if (!r.ok) { body.innerHTML = '<p style="color:var(--gray2)">' + esc((r.data && r.data.error) || 'Could not load results.') + '</p>'; return; }
+  const p = r.data.poll, pc = plPercents(p), max = Math.max.apply(null, p.options.map(o => o.votes));
+  body.innerHTML = '<h3 style="font-size:19px;letter-spacing:-.02em;margin-bottom:6px;overflow-wrap:anywhere">' + esc(p.title) + '</h3>' +
+    '<p class="pl-sum">' + fmtNum(p.voters) + ' vote' + (p.voters === 1 ? '' : 's') + (plClosed(p) ? ' · closed' : ' · live') + '</p>' +
+    '<div class="pl-res" style="--pc:' + esc(p.color) + '">' + p.options.map((o, i) =>
+      '<div><div class="r-top"><span' + (max > 0 && o.votes === max ? ' style="font-weight:700"' : '') + '>' + esc(o.text) + '</span><b>' + pc[i] + '%</b></div>' +
+      '<div class="r-bar"><i style="width:' + pc[i] + '%"></i></div><div class="r-n">' + fmtNum(o.votes) + ' vote' + (o.votes === 1 ? '' : 's') + '</div></div>').join('') + '</div>';
+  document.getElementById('gFoot').innerHTML = '<a class="btn btn-ghost" href="' + esc(plUrl(id)) + '" target="_blank" rel="noopener">Open poll</a><button class="btn btn-pri" type="button" id="plResDone">Done</button>';
+  document.getElementById('plResDone').addEventListener('click', closeModal);
+}
+function plConfirm(title, text, label, danger, run){
+  openModal(title, '<p style="font-size:14.5px;line-height:1.6;color:var(--gray2)">' + text + '</p>',
+    '<button class="btn btn-ghost" type="button" id="plNo">Cancel</button><button class="btn ' + (danger ? 'btn-danger' : 'btn-pri') + '" type="button" id="plYes">' + label + '</button>');
+  document.getElementById('plNo').addEventListener('click', closeModal);
+  document.getElementById('plYes').addEventListener('click', async function(){
+    const b = this; b.disabled = true; b.innerHTML = '<span class="spin"></span>Working…';
+    const ok = await run();
+    if (ok) closeModal(); else { b.disabled = false; b.textContent = label; }
+  });
+}
+document.getElementById('plList').addEventListener('click', function(e){
+  const t = e.target.closest('button');
+  if (!t) return;
+  if (t.hasAttribute('data-plcopy')) {
+    copyText(t.getAttribute('data-plcopy')).then(ok => showToast(ok ? 'Poll link copied.' : 'Could not copy — long press to copy manually.', ok ? 'success' : 'error'));
+  } else if (t.hasAttribute('data-plres')) plResults(t.getAttribute('data-plres'));
+  else if (t.hasAttribute('data-plqr')) { const id = t.getAttribute('data-plqr'); showQRFor(plUrl(id), 'poll-' + id); }
+  else if (t.hasAttribute('data-plclose')) {
+    const id = t.getAttribute('data-plclose');
+    plConfirm('Close this poll?', 'Voting stops right away and the final results stay visible on the poll page. This cannot be undone.', 'Close poll', false, async function(){
+      const r = await api('POST', '/user/polls/' + encodeURIComponent(id) + '/close');
+      if (!r.ok) { showToast((r.data && r.data.error) || 'Could not close the poll.', 'error'); return false; }
+      showToast('Poll closed.', 'success'); loadPolls(); return true;
+    });
+  } else if (t.hasAttribute('data-pldel')) {
+    const id = t.getAttribute('data-pldel');
+    plConfirm('Delete this poll?', 'Deleting <strong style="color:var(--white);font-family:var(--font-mono)">/p/' + esc(id) + '</strong> removes its votes for good and the link will show “not found”. This frees one of your poll slots.', 'Delete poll', true, async function(){
+      const r = await api('DELETE', '/user/polls/' + encodeURIComponent(id));
+      if (!r.ok) { showToast((r.data && r.data.error) || 'Could not delete the poll.', 'error'); return false; }
+      showToast('Poll deleted.', 'success'); loadPolls(); return true;
+    });
+  }
+});
+document.getElementById('plRefresh').addEventListener('click', function(){ loadPolls(); showToast('Refreshed.', 'info'); });
+
+document.getElementById('plForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  setAlert('_plAlert', '');
+  const title = document.getElementById('plTitle').value.trim();
+  const options = plRows().map(r => r.querySelector('input').value.trim()).filter(Boolean);
+  if (title.length < 3) { setAlert('_plAlert', 'Write your question (at least 3 characters).'); document.getElementById('plTitle').focus(); return; }
+  if (new Set(options.map(o => o.toLowerCase())).size < 2) { setAlert('_plAlert', 'Add at least 2 different options.'); return; }
+  const body = {
+    title, options, description: document.getElementById('plDesc').value.trim(),
+    multiple: document.getElementById('plMulti').checked,
+    color: (document.querySelector('#plColors input:checked') || {}).value || PL_COLORS[0]
+  };
+  const endsRaw = document.getElementById('plEnds').value;
+  if (endsRaw) {
+    const ts = new Date(endsRaw).getTime();
+    if (isNaN(ts) || ts <= Date.now()) { setAlert('_plAlert', 'Pick a closing time in the future.'); return; }
+    body.ends_at = ts;
+  }
+  const btn = document.getElementById('plCreate'), original = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Creating…';
+  const r = await api('POST', '/user/polls', body);
+  btn.innerHTML = original; btn.disabled = false;
+  if (!r.ok) {
+    setAlert('_plAlert', (r.data && r.data.error) || 'Could not create the poll.');
+    if (r.status === 403) loadPolls();
+    return;
+  }
+  document.getElementById('plForm').reset(); plResetForm();
+  showToast('Poll created. Link copied.', 'success');
+  copyText(r.data.url);
+  await loadPolls();
+});
+plInitForm();
 
 /* ─── BOOT ──────────────────────────────────────────────────────────── */
 async function boot(){
