@@ -52,6 +52,11 @@ async function loadPoll(db, id) {
   return v;
 }
 
+const pollOver = v => !!(v.closed || (v.ends_at && v.ends_at <= Date.now()));
+function hidePoll(v) {
+  if (!v || v.gone || pollOver(v)) return v;
+  return { ...v, hidden: true, voters: 0, options: v.options.map(o => ({ id: o.id, text: o.text })) };
+}
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const hex = n => [...crypto.getRandomValues(new Uint8Array(n))].map(b => b.toString(16).padStart(2, '0')).join('');
 
@@ -216,7 +221,8 @@ const CLIENT = String.raw`
     return Math.floor(hr / 24) + ' days';
   }
   function metaText(p) {
-    var t = plural(p.voters, 'vote');
+    var t = p.hidden ? '' : plural(p.voters, 'vote');
+    if (p.hidden && !isClosed(p)) { if (p.ends_at) t = 'closes in ' + left(p.ends_at - Date.now()); return t; }
     if (isClosed(p)) {
       if (p.ends_at && !p.closed) t += ' · ended ' + new Date(p.ends_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
     } else if (p.ends_at) t += ' · closes in ' + left(p.ends_at - Date.now());
@@ -265,10 +271,7 @@ const CLIENT = String.raw`
     });
     btn.addEventListener('click', submit);
     wrap.appendChild(list); wrap.appendChild(btn);
-    var alt = h('button', 'link', 'View results');
-    alt.type = 'button';
-    alt.addEventListener('click', function () { S.view = 'results'; render(); });
-    wrap.appendChild(alt);
+    wrap.appendChild(h('p', 'hint', 'Results are shown after you vote.'));
     return wrap;
   }
 
@@ -292,13 +295,8 @@ const CLIENT = String.raw`
     });
     if (isClosed(p)) {
       wrap.appendChild(h('div', 'note', 'This poll is closed. These are the final results.'));
-    } else if (S.mine) {
-      wrap.appendChild(h('div', 'note', 'Thanks for voting. Results update live.'));
     } else {
-      var back = h('button', 'link', 'Back to voting');
-      back.type = 'button';
-      back.addEventListener('click', function () { S.view = 'vote'; render(); });
-      wrap.appendChild(back);
+      wrap.appendChild(h('div', 'note', 'Thanks for voting. Results update live.'));
     }
     return wrap;
   }
@@ -375,8 +373,10 @@ const CLIENT = String.raw`
   }
   function accent(p) { if (p && p.color) document.documentElement.style.setProperty('--pa', p.color); }
   function refresh(force) {
-    return api('GET', '/public/polls/' + ID).then(function (x) {
-      if (x.s === 200 && x.d.poll) {
+    var voted = S.mine || (S.poll && !S.poll.hidden);
+    return (voted ? api('POST', '/public/polls/' + ID + '/results', { voter: voterId() }) : api('GET', '/public/polls/' + ID)).then(function (x) {
+      if (x.s === 403) { S.mine = null; S.view = 'vote'; if (S.poll) render(); }
+      else if (x.s === 200 && x.d.poll) {
         var was = S.poll ? isClosed(S.poll) : null;
         S.poll = x.d.poll;
         if (force || was !== isClosed(S.poll)) { if (isClosed(S.poll)) S.view = 'results'; render(); } else paint();
@@ -420,7 +420,8 @@ const CLIENT = String.raw`
 
   function start(p) {
     S.poll = p; S.mine = loadMine(); S.view = (S.mine || isClosed(p)) ? 'results' : 'vote';
-    accent(p); render();
+    accent(p);
+    if (S.mine && p.hidden) refresh(true); else render();
   }
 
   var tb = $('#themeBtn');
@@ -432,7 +433,7 @@ const CLIENT = String.raw`
 
   setInterval(function () {
     if (document.hidden || !S.poll) return;
-    if (S.view === 'results' && !isClosed(S.poll)) refresh();
+    if (S.view === 'results' && !isClosed(S.poll) && !S.poll.hidden) refresh();
     else if (isClosed(S.poll) && S.view === 'vote') { S.view = 'results'; render(); }
     else { var m = $('#meta'); if (m) m.textContent = metaText(S.poll); }
   }, 15000);
@@ -509,6 +510,7 @@ export async function onRequest(ctx) {
     try { v = await loadPoll(env.CLIPT_DB, id); }
     catch (e) { console.error('poll page lookup failed', e && e.message); v = null; }    // tables may not exist yet: the page then loads via /api, which creates them
   }
+  v = hidePoll(v);
   if (v && v.gone) { status = v.removed ? 410 : 404; await rl('pbad:' + ip, 15, 60); }
 
   const nonce = hex(16);
