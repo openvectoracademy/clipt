@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<title>SlideCast — Class Recording Studio</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2b;--panel2:#182238;--line:#2a3650;--text:#eef3ff;--muted:#9aa9c3;--blue:#6c8cff;--red:#ff5f6d;--green:#37d6a0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:10px 13px;background:var(--panel2);color:var(--text)}button:disabled{opacity:.4;cursor:not-allowed}button.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}button.danger{background:#381b2a;border-color:#703047;color:#ffdce1}button.ghost{background:transparent}.app{max-width:1500px;margin:auto;padding:16px;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}.brand{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:800;letter-spacing:-.4px}.logo{width:35px;height:35px;border-radius:11px;background:linear-gradient(135deg,#6c8cff,#8c6cff);display:grid;place-items:center;font-weight:900}.sub{color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.layout{display:grid;grid-template-columns:190px minmax(0,1fr);gap:14px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;min-width:0}.side{padding:12px}.panel-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:750;margin:3px 0 12px}.slide-list{display:flex;flex-direction:column;gap:9px}.slide-card{padding:7px;border:1px solid transparent;border-radius:11px;background:#0d1424;text-align:left}.slide-card.active{border-color:var(--blue);background:#182440}.thumb{aspect-ratio:16/9;background:#fff;border-radius:6px;overflow:hidden;color:#172033;display:grid;place-items:center;padding:7px;font-size:11px;text-align:center}.slide-name{display:block;margin-top:6px;font-size:12px;color:#d9e2f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.add-slide{width:100%;margin-top:10px}.main{display:flex;flex-direction:column;gap:14px;min-width:0}.stage-panel{padding:12px}.stage-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;flex-wrap:wrap}.status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}.dot{width:8px;height:8px;border-radius:50%;background:#71809a}.dot.live{background:var(--red);box-shadow:0 0 0 4px #ff5f6d22;animation:pulse 1.2s infinite}@keyframes pulse{50%{opacity:.45}}
+.stage-wrap{width:100%;background:#070b14;border-radius:12px;padding:8px;display:grid;place-items:center}.stage{width:100%;aspect-ratio:16/9;max-height:66vh;background:#fff;overflow:hidden;position:relative;border-radius:4px;color:#111827}.stage iframe{width:100%;height:100%;border:0;display:block;background:white}.stage-label{position:absolute;right:9px;bottom:7px;background:#0b1020b8;color:#fff;font-size:10px;border-radius:5px;padding:3px 6px;pointer-events:none}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:11px}.controls .spacer{flex:1}.timer{font-variant-numeric:tabular-nums;font-weight:750;font-size:15px;min-width:58px}.small{font-size:12px;color:var(--muted)}
+.editor{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;padding:14px}.field label{display:block;font-size:12px;font-weight:700;color:#bdc9df;margin-bottom:6px}.field textarea,.field input{width:100%;background:#0a1020;border:1px solid var(--line);border-radius:9px;color:#eaf0ff;padding:10px;outline:none}.field textarea{min-height:155px;resize:vertical;font:12px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}.field input:focus,.field textarea:focus{border-color:var(--blue)}.editor-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:0 14px 14px}.settings{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.settings label{font-size:12px;color:var(--muted)}.settings select{background:#0a1020;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px}.notice{padding:12px 14px;color:#b9c8e1;font-size:12px;line-height:1.6}.notice strong{color:#f0f5ff}.hidden{display:none!important}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#202d45;border:1px solid #405171;color:#fff;padding:11px 15px;border-radius:12px;box-shadow:0 8px 30px #0007;z-index:10;max-width:90vw}
+
+/* Annotation tools: visible in the studio, composited into the recording without UI chrome. */
+.stage-wrap{position:relative;touch-action:none}
+#inkCanvas{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);pointer-events:auto;touch-action:none;z-index:3;border-radius:4px}
+#inkToolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding:8px;background:#0d1424;border:1px solid var(--line);border-radius:12px}
+#inkToolbar button{padding:7px 9px;font-size:12px}
+#inkToolbar button.tool-active{background:#344a78;border-color:#8ca8ff;box-shadow:inset 0 0 0 1px #8ca8ff}
+#inkToolbar input[type=color]{width:30px;height:30px;padding:2px;background:#0a1020;border:1px solid var(--line);border-radius:7px}
+#inkToolbar input[type=range]{width:82px;accent-color:var(--blue)}
+#inkToolbar .tool-sep{height:22px;width:1px;background:var(--line);margin:0 2px}
+.stage-panel:fullscreen,.stage-panel:-webkit-full-screen{background:#070b14;border:0;border-radius:0;padding:8px;display:flex;flex-direction:column;justify-content:center}
+.stage-panel:fullscreen .stage-wrap,.stage-panel:-webkit-full-screen .stage-wrap{width:min(100vw,177.78vh);max-height:calc(100vh - 130px);margin:auto}
+.stage-panel:fullscreen .stage,.stage-panel:-webkit-full-screen .stage{max-height:calc(100vh - 150px)}
+.stage-panel:fullscreen .stage-top,.stage-panel:-webkit-full-screen .stage-top{padding:0 8px}
+@media(max-width:760px){
+ #inkToolbar{gap:5px;padding:6px}
+ #inkToolbar button{padding:8px 9px}
+ #inkToolbar input[type=range]{width:65px}
+ .stage-panel:fullscreen .stage-wrap,.stage-panel:-webkit-full-screen .stage-wrap{width:min(100vw,177.78vh);max-height:calc(100vh - 95px);padding:3px}
+ .stage-panel:fullscreen .stage,.stage-panel:-webkit-full-screen .stage{max-height:calc(100vh - 105px)}
+}
+@media(max-width:760px){.app{padding:10px}.layout{grid-template-columns:1fr}.side{order:2}.slide-list{flex-direction:row;overflow-x:auto;padding-bottom:3px}.slide-card{min-width:112px;max-width:145px;flex:0 0 32%}.add-slide{width:auto}.editor{grid-template-columns:1fr}.field textarea{min-height:130px}.stage{max-height:none}.stage-panel{padding:8px}.controls button{padding:9px 10px}.top-actions{width:100%}.top-actions button{flex:1}.notice{padding:11px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">S</div><div>SlideCast <div class="sub">HTML slide recording studio</div></div></div>
+  <div class="top-actions"><button id="saveBtn">Save project</button><button id="loadBtn">Open project</button><input id="fileInput" type="file" accept=".json,application/json" class="hidden"></div>
+</header>
+<div class="layout">
+  <aside class="panel side">
+    <div class="panel-title">Your slides</div>
+    <div id="slideList" class="slide-list"></div>
+    <button id="addSlide" class="add-slide">＋ Add slide</button>
+  </aside>
+  <main class="main">
+    <section class="panel stage-panel">
+      <div class="stage-top">
+        <div><strong id="currentTitle">Welcome</strong><div class="sub">Recorded area · 16:9 presentation</div></div>
+        <div class="status"><span id="recDot" class="dot"></span><span id="statusText">Ready to record</span></div>
+      </div>
+      <div class="stage-wrap"><div id="stage" class="stage"><iframe id="preview" title="Slide preview" sandbox="allow-scripts"></iframe><span class="stage-label">SLIDE AREA ONLY</span></div><canvas id="inkCanvas" aria-label="Drawing layer"></canvas></div>
+      <div id="inkToolbar" aria-label="Slide annotation tools">
+        <button data-tool="pen" class="tool-active">✎ Pen</button>
+        <button data-tool="marker">▰ Marker</button>
+        <button data-tool="line">／ Line</button>
+        <button data-tool="rect">□ Rectangle</button>
+        <button data-tool="circle">○ Circle</button>
+        <button data-tool="arrow">➜ Arrow</button>
+        <button data-tool="eraser">⌫ Eraser</button>
+        <span class="tool-sep"></span><label class="small" for="inkColor">Color</label><input id="inkColor" type="color" value="#e53935">
+        <label class="small" for="inkSize">Size</label><input id="inkSize" type="range" min="2" max="28" value="5">
+        <button id="clearInk">Clear ink</button><button id="fullScreenBtn">⛶ Full screen</button>
+      </div>
+      <div class="controls">
+        <button id="prevBtn" aria-label="Previous slide">← Prev</button><button id="nextBtn" aria-label="Next slide">Next →</button>
+        <span class="spacer"></span><span id="timer" class="timer">00:00</span>
+        <button id="recordBtn" class="primary">● Record</button><button id="pauseBtn" disabled>Pause</button><button id="stopBtn" class="danger" disabled>Stop & export</button>
+      </div>
+      <div class="small" style="margin-top:8px">Tip: draw or annotate while teaching. Tool buttons are excluded from the exported video.</div>
+    </section>
+    <section class="panel">
+      <div class="editor" style="grid-template-columns:minmax(0,1fr)">
+        <div class="field"><label for="htmlCode">Slide code — HTML + CSS inside one HTML document</label><textarea id="htmlCode" spellcheck="false" style="min-height:260px"></textarea><div class="small" style="margin-top:6px">Put your CSS inside a &lt;style&gt; tag in the same HTML code. JavaScript can go inside a &lt;script&gt; tag.</div></div>
+      </div>
+      <div class="editor-actions"><button id="applyBtn" class="primary">Apply to slide</button><button id="deleteBtn">Delete slide</button><div class="settings"><label for="fps">Capture rate</label><select id="fps"><option value="15">15 FPS · smoother on phones</option><option value="30" selected>30 FPS · higher motion</option></select></div></div>
+    </section>
+    <section class="panel notice">
+      <strong>Android / 1080p notes:</strong> The presentation canvas is exported at 1920×1080. Recording is limited to the rectangle above; the editor, buttons, and slide list are not included. Android browsers commonly export <strong>WebM</strong>, not MP4. If MP4 is needed, convert the downloaded file with a video editor or encoder. Keep the screen awake and avoid switching apps during recording for best results.
+    </section>
+  </main>
+</div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+const starterSlides = [
+ {title:"Welcome to class",html:`<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;font-family:Arial,sans-serif;color:#15203a;overflow:hidden}
+.cover{height:100%;padding:9% 10%;background:radial-gradient(circle at 85% 15%,#dce7ff,transparent 35%),linear-gradient(135deg,#fff 45%,#f1f5ff)}
+.tag{font-size:1.2vw;letter-spacing:.18em;color:#5269bd;font-weight:bold}h1{font-size:6vw;line-height:1.03;margin:8% 0 2%;letter-spacing:-.04em}h1 span{color:#5269e8}p{font-size:2vw;color:#66718a;max-width:65%}.line{width:11%;height:7px;background:#5269e8;border-radius:8px;margin:6% 0 2%}small{font-size:1.2vw;color:#7a8499}
+</style></head><body><main class="cover"><div class="tag">EXALYTE · ONLINE CLASS</div><h1>Welcome to<br><span>Physics</span></h1><p>Today we will understand the core concept step by step.</p><div class="line"></div><small>Chapter 01 · Introduction</small></main></body></html>`},
+ {title:"Key concept",html:`<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;font-family:Arial,sans-serif;color:#15203a;overflow:hidden}.lesson{height:100%;padding:7% 9%;background:#fff}.eyebrow{color:#5269e8;font-size:1.2vw;font-weight:bold;letter-spacing:.18em}h1{font-size:4.1vw;max-width:85%;line-height:1.1;margin:4% 0}.formula{display:inline-block;background:#eef2ff;color:#3e53c6;padding:2% 5%;border-radius:20px;font-size:5vw;font-weight:bold}p{font-size:2vw;color:#58647b}.note{margin-top:5%;padding:2.2%;background:#f5f7fb;border-left:7px solid #5269e8;font-size:1.6vw}
+</style></head><body><main class="lesson"><div class="eyebrow">KEY CONCEPT</div><h1>Force = mass × acceleration</h1><div class="formula">F = ma</div><p>Force is measured in newtons (N).</p><div class="note"><b>Remember:</b> If mass stays constant, greater acceleration requires greater force.</div></main></body></html>`}
+];
+let slides = JSON.parse(localStorage.getItem('slidecast-project')||'null') || starterSlides.map(x=>({...x}));
+/* Migrate older projects that stored HTML fragments and CSS separately. */
+slides = slides.map(s => {
+  if (s.css && s.html && !/<html[\s>]/i.test(s.html)) {
+    return {...s, html:`<!doctype html><html><head><meta charset="utf-8"><style>${s.css}</style></head><body>${s.html}</body></html>`, css:undefined};
+  }
+  return {...s, html:s.html||'<!doctype html><html><head><style>body{font-family:Arial}</style></head><body><h1>New slide</h1></body></html>'};
+});
+let current=0, recorder=null, chunks=[], micStream=null, timerStart=0, elapsedBefore=0, timerInterval=null, renderInterval=null, recording=false, paused=false, canvasStream=null, audioContext=null;
+const $=id=>document.getElementById(id);
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),3000)}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function docFor(s){
+  const code=s.html||'<!doctype html><html><body></body></html>';
+  if(/<html[\s>]/i.test(code)) return code;
+  return `<!doctype html><html><head><meta charset="utf-8"></head><body>${code}</body></html>`;
+}
+function renderPreview(){const s=slides[current];$('preview').srcdoc=docFor(s);$('currentTitle').textContent=s.title||`Slide ${current+1}`;$('htmlCode').value=s.html||'';$('prevBtn').disabled=current===0;$('nextBtn').disabled=current===slides.length-1;renderList()}
+function renderList(){const list=$('slideList');list.innerHTML='';slides.forEach((s,i)=>{const b=document.createElement('button');b.className='slide-card'+(i===current?' active':'');b.innerHTML=`<div class="thumb">${esc(s.title||'Untitled slide')}</div><span class="slide-name">${i+1}. ${esc(s.title||'Untitled slide')}</span>`;b.onclick=()=>{if(recording&&!paused){}current=i;renderPreview()};list.appendChild(b)})}
+function applySlide(){slides[current].html=$('htmlCode').value;delete slides[current].css;renderPreview();persist(false);toast('Slide updated')}
+function persist(show=true){localStorage.setItem('slidecast-project',JSON.stringify(slides));if(show)toast('Project saved on this device')}
+function fmt(sec){let m=Math.floor(sec/60),s=Math.floor(sec%60);return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')}
+function tick(){let sec=elapsedBefore+(performance.now()-timerStart)/1000;$('timer').textContent=fmt(sec)}
+async function drawFrame(ctx,canvas){try{const frame=await html2canvas($('preview').contentDocument.body,{backgroundColor:'#ffffff',scale:1,width:1920,height:1080,windowWidth:1920,windowHeight:1080,logging:false,useCORS:true});ctx.clearRect(0,0,canvas.width,canvas.height);ctx.drawImage(frame,0,0,canvas.width,canvas.height);ctx.drawImage(inkCanvas,0,0,canvas.width,canvas.height)}catch(e){console.error(e)}}
+async function startRecording(){
+ if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){toast('This browser does not support browser recording. Try updated Chrome.');return}
+ if(typeof html2canvas==='undefined'){toast('Slide renderer did not load. Check internet and reload.');return}
+ try{
+  $('recordBtn').disabled=true;$('statusText').textContent='Requesting microphone…';
+  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true}});
+  const c=document.createElement('canvas');c.width=1920;c.height=1080;const ctx=c.getContext('2d',{alpha:false});
+  await new Promise(r=>setTimeout(r,250));await drawFrame(ctx,c);
+  canvasStream=c.captureStream(Number($('fps').value));
+  let tracks=[...canvasStream.getVideoTracks()];
+  tracks.push(...micStream.getAudioTracks());
+  const combined=new MediaStream(tracks);
+  const types=['video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+  const mime=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
+  recorder=new MediaRecorder(combined,mime?{mimeType:mime,videoBitsPerSecond:8000000}: {videoBitsPerSecond:8000000});
+  chunks=[];recorder.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  recorder.onstop=()=>{
+   const blob=new Blob(chunks,{type:recorder.mimeType||'video/webm'});const url=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=url;a.download=`slidecast-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}.webm`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);
+   cleanup();toast('Recording exported. Check Downloads for the WebM video.');
+  };
+  recorder.start(1000);recording=true;paused=false;timerStart=performance.now();elapsedBefore=0;
+  renderInterval=setInterval(async()=>{if(recording&&!paused)await drawFrame(ctx,c)},1000/Number($('fps').value));
+  timerInterval=setInterval(tick,250);$('pauseBtn').disabled=false;$('stopBtn').disabled=false;$('recordBtn').textContent='● Recording';$('recDot').classList.add('live');$('statusText').textContent='Recording slide area + microphone';toast('Recording started');
+ }catch(e){console.error(e);cleanup();toast(e.name==='NotAllowedError'?'Microphone permission is required to record narration.':'Could not start recording: '+e.message)}
+}
+function pauseRecording(){if(!recorder||!recording)return;if(!paused){recorder.pause();elapsedBefore+=(performance.now()-timerStart)/1000;paused=true;$('pauseBtn').textContent='Resume';$('statusText').textContent='Paused'}else{recorder.resume();timerStart=performance.now();paused=false;$('pauseBtn').textContent='Pause';$('statusText').textContent='Recording slide area + microphone'}}
+function stopRecording(){if(recorder&&recorder.state!=='inactive'){recording=false;clearInterval(renderInterval);clearInterval(timerInterval);recorder.stop();$('stopBtn').disabled=true;$('pauseBtn').disabled=true;$('statusText').textContent='Preparing video…';$('recDot').classList.remove('live');$('recordBtn').textContent='● Record';$('recordBtn').disabled=false}}
+function cleanup(){recording=false;paused=false;clearInterval(renderInterval);clearInterval(timerInterval);if(micStream)micStream.getTracks().forEach(t=>t.stop());if(canvasStream)canvasStream.getTracks().forEach(t=>t.stop());micStream=null;canvasStream=null;$('recordBtn').disabled=false;$('pauseBtn').disabled=true;$('stopBtn').disabled=true;$('pauseBtn').textContent='Pause';$('recDot').classList.remove('live');$('statusText').textContent='Ready to record';}
+$('applyBtn').onclick=applySlide;
+$('addSlide').onclick=()=>{slides.splice(current+1,0,{title:`Slide ${slides.length+1}`,html:'<!doctype html><html><head><meta charset="utf-8"><style>*{box-sizing:border-box}html,body{height:100%;margin:0;font-family:Arial,sans-serif;color:#172033}.lesson{height:100%;padding:8%;background:#fff}h1{font-size:5vw}p{font-size:2vw;color:#66718a}</style></head><body><main class="lesson"><h1>Your new slide</h1><p>Edit this HTML and its style tag.</p></main></body></html>'});current++;renderPreview();persist(false)};
+$('deleteBtn').onclick=()=>{if(slides.length===1){toast('Keep at least one slide');return}slides.splice(current,1);current=Math.max(0,current-1);renderPreview();persist(false)};
+$('prevBtn').onclick=()=>{if(current>0){current--;renderPreview()}};
+$('nextBtn').onclick=()=>{if(current<slides.length-1){current++;renderPreview()}};
+$('recordBtn').onclick=startRecording;$('pauseBtn').onclick=pauseRecording;$('stopBtn').onclick=stopRecording;
+$('saveBtn').onclick=()=>{persist(false);const blob=new Blob([JSON.stringify(slides,null,2)],{type:'application/json'});const u=URL.createObjectURL(blob);const a=document.createElement('a');a.href=u;a.download='slidecast-project.json';a.click();URL.revokeObjectURL(u);toast('Project JSON downloaded')};
+$('loadBtn').onclick=()=>$('fileInput').click();
+$('fileInput').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const v=JSON.parse(await f.text());if(!Array.isArray(v)||!v.length)throw Error('Invalid project');slides=v;current=0;renderPreview();persist(false);toast('Project opened')}catch(err){toast('Could not open this project JSON')}e.target.value=''};
+
+// Smooth, touch-friendly annotation layer. Coordinates are normalized to the slide rectangle.
+const inkCanvas=$('inkCanvas'), inkCtx=inkCanvas.getContext('2d');
+let tool='pen', drawing=false, startPt=null, lastPt=null, savedInk=null;
+function resizeInk(){
+ const r=inkCanvas.getBoundingClientRect(); if(!r.width||!r.height)return;
+ const old=document.createElement('canvas');old.width=inkCanvas.width||1;old.height=inkCanvas.height||1;old.getContext('2d').drawImage(inkCanvas,0,0);
+ const dpr=Math.min(window.devicePixelRatio||1,2);inkCanvas.width=Math.round(r.width*dpr);inkCanvas.height=Math.round(r.height*dpr);
+ inkCtx.setTransform(dpr,0,0,dpr,0,0);inkCtx.lineCap='round';inkCtx.lineJoin='round';
+ if(old.width>1&&old.height>1)inkCtx.drawImage(old,0,0,old.width,old.height,0,0,r.width,r.height);
+}
+function point(e){const r=inkCanvas.getBoundingClientRect();return{x:(e.clientX-r.left)/r.width*inkCanvas.width/(window.devicePixelRatio||1),y:(e.clientY-r.top)/r.height*inkCanvas.height/(window.devicePixelRatio||1)}}
+function setupStroke(){inkCtx.lineCap='round';inkCtx.lineJoin='round';inkCtx.strokeStyle=$('inkColor').value;inkCtx.fillStyle=$('inkColor').value;inkCtx.lineWidth=Number($('inkSize').value);if(tool==='marker'){inkCtx.globalAlpha=.32;inkCtx.lineWidth=Number($('inkSize').value)*3}else{inkCtx.globalAlpha=1}}
+function drawShape(a,b){const scale=window.devicePixelRatio||1;inkCtx.beginPath();if(tool==='line'){inkCtx.moveTo(a.x,a.y);inkCtx.lineTo(b.x,b.y)}else if(tool==='rect'){inkCtx.rect(a.x,a.y,b.x-a.x,b.y-a.y)}else if(tool==='circle'){const rx=(b.x-a.x)/2,ry=(b.y-a.y)/2;inkCtx.ellipse(a.x+rx,a.y+ry,Math.abs(rx),Math.abs(ry),0,0,Math.PI*2)}else if(tool==='arrow'){const ang=Math.atan2(b.y-a.y,b.x-a.x),head=14*scale;inkCtx.moveTo(a.x,a.y);inkCtx.lineTo(b.x,b.y);inkCtx.moveTo(b.x,b.y);inkCtx.lineTo(b.x-head*Math.cos(ang-Math.PI/6),b.y-head*Math.sin(ang-Math.PI/6));inkCtx.moveTo(b.x,b.y);inkCtx.lineTo(b.x-head*Math.cos(ang+Math.PI/6),b.y-head*Math.sin(ang+Math.PI/6))}inkCtx.stroke()}
+function pos(e){return point(e)}
+inkCanvas.addEventListener('pointerdown',e=>{if(!['pen','marker','eraser','line','rect','circle','arrow'].includes(tool))return;e.preventDefault();inkCanvas.setPointerCapture(e.pointerId);resizeInk();drawing=true;startPt=pos(e);lastPt=startPt;savedInk=document.createElement('canvas');savedInk.width=inkCanvas.width;savedInk.height=inkCanvas.height;savedInk.getContext('2d').drawImage(inkCanvas,0,0);setupStroke();if(tool==='pen'||tool==='marker'||tool==='eraser'){if(tool==='eraser'){inkCtx.globalCompositeOperation='destination-out';inkCtx.lineWidth=Number($('inkSize').value)*4}else inkCtx.globalCompositeOperation='source-over';inkCtx.beginPath();inkCtx.moveTo(startPt.x,startPt.y);inkCtx.lineTo(startPt.x+.1,startPt.y+.1);inkCtx.stroke()}});
+inkCanvas.addEventListener('pointermove',e=>{if(!drawing)return;e.preventDefault();const p=pos(e);const a=startPt,b=p;if(tool==='pen'||tool==='marker'||tool==='eraser'){setupStroke();if(tool==='eraser')inkCtx.globalCompositeOperation='destination-out';else inkCtx.globalCompositeOperation='source-over';inkCtx.beginPath();inkCtx.moveTo(lastPt.x,lastPt.y);inkCtx.lineTo(p.x,p.y);inkCtx.stroke()}else{const r=inkCanvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);inkCtx.clearRect(0,0,r.width,r.height);inkCtx.drawImage(savedInk,0,0,inkCanvas.width,inkCanvas.height,0,0,r.width,r.height);setupStroke();inkCtx.globalCompositeOperation='source-over';drawShape(a,b)}lastPt=p});
+function endDraw(e){if(!drawing)return;drawing=false;inkCtx.globalCompositeOperation='source-over';inkCtx.globalAlpha=1;try{inkCanvas.releasePointerCapture(e.pointerId)}catch{}}
+inkCanvas.addEventListener('pointerup',endDraw);inkCanvas.addEventListener('pointercancel',endDraw);
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(x=>x.classList.toggle('tool-active',x===b));inkCanvas.style.pointerEvents='auto';});
+$('clearInk').onclick=()=>inkCtx.clearRect(0,0,inkCanvas.width,inkCanvas.height);
+$('fullScreenBtn').onclick=async()=>{try{const target=$('.stage-panel');if(!document.fullscreenElement){await target.requestFullscreen();try{await screen.orientation.lock('landscape')}catch{}}else{await document.exitFullscreen();try{screen.orientation.unlock()}catch{}}$('fullScreenBtn').textContent=document.fullscreenElement?'⛶ Full screen':'⛶ Exit full screen';setTimeout(resizeInk,150)}catch(e){toast('Full screen is not available in this browser. Try Chrome and rotate your phone sideways.')}};
+document.addEventListener('fullscreenchange',()=>{setTimeout(resizeInk,200);$('fullScreenBtn').textContent=document.fullscreenElement?'⛶ Exit full screen':'⛶ Full screen'});
+window.addEventListener('resize',()=>setTimeout(resizeInk,100));
+$('preview').addEventListener('load',()=>{setTimeout(resizeInk,100)});
+setTimeout(resizeInk,250);
+renderPreview();
+</script>
+</body></html>
